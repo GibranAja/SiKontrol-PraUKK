@@ -16,29 +16,29 @@ function Test-Endpoint {
         [bool]$UseAuth = $false,
         [string]$Description
     )
-    
+
     Write-Host "Testing: $Description" -ForegroundColor Yellow
     Write-Host "  → $Method $Endpoint" -ForegroundColor Gray
-    
+
     try {
         $headers = @{
             "Content-Type" = "application/json"
         }
-        
+
         if ($UseAuth -and $global:TOKEN) {
             $headers["Authorization"] = "Bearer $global:TOKEN"
         }
-        
+
         $params = @{
             Method = $Method
             Uri = "$BASE_URL$Endpoint"
             Headers = $headers
         }
-        
+
         if ($Body -and $Method -ne "GET") {
             $params["Body"] = $Body
         }
-        
+
         $response = Invoke-RestMethod @params
         Write-Host "  ✅ SUCCESS" -ForegroundColor Green
         return $response
@@ -71,7 +71,7 @@ if ($global:REFRESH_TOKEN) {
     $refreshBody = @{
         refreshToken = $global:REFRESH_TOKEN
     } | ConvertTo-Json
-    
+
     Test-Endpoint -Method "POST" -Endpoint "/auth/refresh" -Body $refreshBody -Description "Refresh Token" | Out-Null
 }
 

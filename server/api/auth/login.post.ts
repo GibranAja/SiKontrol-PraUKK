@@ -24,10 +24,8 @@ export default defineEventHandler(async (event) => {
         message: err.message,
       }))
 
-      throw createError({
-        statusCode: 400,
-        data: formatErrorResponse('VALIDATION_ERROR', 'Data tidak valid', errors),
-      })
+      setResponseStatus(event, 400)
+      return formatErrorResponse('VALIDATION_ERROR', 'Data tidak valid', errors)
     }
 
     const { username, password } = validation.data
@@ -49,35 +47,27 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!user) {
-      throw createError({
-        statusCode: 401,
-        data: formatErrorResponse('UNAUTHORIZED', 'Username atau password salah'),
-      })
+      setResponseStatus(event, 401)
+      return formatErrorResponse('UNAUTHORIZED', 'Username atau password salah')
     }
 
     // Check account status
     if (user.status_akun === 'DIBLOKIR') {
-      throw createError({
-        statusCode: 403,
-        data: formatErrorResponse('FORBIDDEN', 'Akun Anda diblokir. Hubungi administrator.'),
-      })
+      setResponseStatus(event, 403)
+      return formatErrorResponse('FORBIDDEN', 'Akun Anda diblokir. Hubungi administrator.')
     }
 
     if (user.status_akun === 'NONAKTIF') {
-      throw createError({
-        statusCode: 403,
-        data: formatErrorResponse('FORBIDDEN', 'Akun Anda tidak aktif.'),
-      })
+      setResponseStatus(event, 403)
+      return formatErrorResponse('FORBIDDEN', 'Akun Anda tidak aktif.')
     }
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(password, user.password)
 
     if (!isPasswordValid) {
-      throw createError({
-        statusCode: 401,
-        data: formatErrorResponse('UNAUTHORIZED', 'Username atau password salah'),
-      })
+      setResponseStatus(event, 401)
+      return formatErrorResponse('UNAUTHORIZED', 'Username atau password salah')
     }
 
     // Generate tokens
@@ -102,17 +92,15 @@ export default defineEventHandler(async (event) => {
     // Return user data without password
     const { password: _, ...userData } = user
 
+    setResponseStatus(event, 200)
     return formatResponse({
       user: userData,
-      tokens,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     }, undefined, 'Login berhasil')
   } catch (error: any) {
-    if (error.statusCode) throw error
-
     console.error('Login error:', error)
-    throw createError({
-      statusCode: 500,
-      data: formatErrorResponse('INTERNAL_ERROR', 'Terjadi kesalahan server'),
-    })
+    setResponseStatus(event, 500)
+    return formatErrorResponse('INTERNAL_ERROR', 'Terjadi kesalahan server')
   }
 })

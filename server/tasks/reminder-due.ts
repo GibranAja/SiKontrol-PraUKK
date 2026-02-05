@@ -12,7 +12,7 @@
  */
 
 import prisma from '~~/server/utils/prisma'
-import { consoleLog } from '~~/server/utils/logger'
+import { logger } from '~~/server/utils/logger'
 
 export default defineTask({
   meta: {
@@ -20,7 +20,7 @@ export default defineTask({
     description: 'Send reminders for loans due today or tomorrow',
   },
   async run() {
-    consoleLog('info', 'Running reminder:due task')
+    logger.info('Running reminder:due task')
 
     try {
       const today = new Date()
@@ -57,7 +57,7 @@ export default defineTask({
       })
 
       if (dueSoon.length === 0) {
-        consoleLog('info', 'No loans due soon')
+        logger.info('No loans due soon')
         return { result: 'No loans due soon' }
       }
 
@@ -67,9 +67,9 @@ export default defineTask({
         const dueDate = loan.tanggal_harus_kembali
         const isToday = dueDate && dueDate.toDateString() === today.toDateString()
 
-        consoleLog('info', `Reminder: Loan ${loan.kode_peminjaman} for ${loan.user.nama_lengkap}`)
-        consoleLog('info', `  - Alat: ${loan.alat.nama_alat}`)
-        consoleLog('info', `  - Due: ${isToday ? 'TODAY' : 'TOMORROW'}`)
+        logger.info(`Reminder: Loan ${loan.kode_peminjaman} for ${loan.user.nama_lengkap}`)
+        logger.info(`  - Alat: ${loan.alat.nama_alat}`)
+        logger.info(`  - Due: ${isToday ? 'TODAY' : 'TOMORROW'}`)
 
         // Log activity
         await prisma.logAktivitas.create({
@@ -93,7 +93,7 @@ export default defineTask({
         loans: dueSoon.map(l => l.kode_peminjaman),
       }
     } catch (error) {
-      consoleLog('error', 'reminder:due task error', error)
+      logger.error('reminder:due task error', error)
       return { result: 'Error', error: String(error) }
     }
   },

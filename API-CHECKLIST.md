@@ -256,7 +256,7 @@
 - [ ] Attach user to event.context
 - [ ] Handle expired tokens
 
-### Authorization Middleware  
+### Authorization Middleware
 - [ ] Check user role (ADMIN/PETUGAS/PEMINJAM)
 - [ ] Route-specific permissions
 

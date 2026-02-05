@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
 
       throw createError({
         statusCode: 400,
-        data: formatErrorResponse('VALIDATION_ERROR', 'Data tidak valid', errors),
+        data: formatErrorResponse('VALIDATION_ERROR', 'Data lu ngga valid', errors),
       })
     }
 

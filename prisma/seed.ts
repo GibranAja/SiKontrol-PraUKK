@@ -29,7 +29,7 @@ async function main() {
   console.log('🌱 Starting database seed...')
 
   // Create Admin User
-  const adminPassword = await bcrypt.hash('admin123', BCRYPT_ROUNDS)
+  const adminPassword = await bcrypt.hash('Admin123', BCRYPT_ROUNDS)
   const admin = await prisma.users.upsert({
     where: { username: 'admin' },
     update: {},
@@ -46,7 +46,7 @@ async function main() {
   console.log('✅ Admin user created:', admin.username)
 
   // Create Petugas Users
-  const petugasPassword = await bcrypt.hash('petugas123', BCRYPT_ROUNDS)
+  const petugasPassword = await bcrypt.hash('Petugas123', BCRYPT_ROUNDS)
   const petugas1 = await prisma.users.upsert({
     where: { username: 'petugas1' },
     update: {},
@@ -77,15 +77,15 @@ async function main() {
   console.log('✅ Petugas users created:', petugas1.username, petugas2.username)
 
   // Create Peminjam Users
-  const peminjamPassword = await bcrypt.hash('siswa123', BCRYPT_ROUNDS)
+  const peminjamPassword = await bcrypt.hash('Peminjam123', BCRYPT_ROUNDS)
   const peminjam: UserData[] = []
 
   const siswaData = [
-    { username: 'siswa1', nama: 'Ahmad Rizky', kelas: 'XII RPL 1', jk: 'Laki-laki' },
-    { username: 'siswa2', nama: 'Dewi Lestari', kelas: 'XII RPL 2', jk: 'Perempuan' },
-    { username: 'siswa3', nama: 'Fajar Nugroho', kelas: 'XI RPL 1', jk: 'Laki-laki' },
-    { username: 'siswa4', nama: 'Indah Permata', kelas: 'XI RPL 2', jk: 'Perempuan' },
-    { username: 'siswa5', nama: 'Kevin Pratama', kelas: 'X RPL 1', jk: 'Laki-laki' },
+    { username: 'peminjam1', nama: 'Andi Pratama', kelas: 'XII RPL 1', jk: 'Laki-laki' },
+    { username: 'peminjam2', nama: 'Dewi Lestari', kelas: 'XII RPL 2', jk: 'Perempuan' },
+    { username: 'peminjam3', nama: 'Fajar Nugroho', kelas: 'XI RPL 1', jk: 'Laki-laki' },
+    { username: 'peminjam4', nama: 'Indah Permata', kelas: 'XI RPL 2', jk: 'Perempuan' },
+    { username: 'peminjam5', nama: 'Kevin Pratama', kelas: 'X RPL 1', jk: 'Laki-laki' },
   ]
 
   for (const siswa of siswaData) {
