@@ -520,7 +520,6 @@ Authorization: Bearer {accessToken}
 **Request Body:**
 ```json
 {
-  "old_password": "Peminjam123",
   "new_password": "NewSecurePass456",
   "confirm_password": "NewSecurePass456"
 }
@@ -666,7 +665,7 @@ GET /kategori/1
 ---
 
 ### 3.4. Update Kategori
-**Endpoint:** `PATCH /kategori/:id`
+**Endpoint:** `PUT /kategori/:id`
 **Access:** ADMIN, PETUGAS
 
 **Headers:**
@@ -680,6 +679,7 @@ Authorization: Bearer {accessToken}
   "nama_kategori": "Elektronik & Teknologi",
   "deskripsi": "Kategori untuk perangkat elektronik dan teknologi modern"
 }
+
 ```
 
 **Response Success (200):**
@@ -897,7 +897,7 @@ Authorization: Bearer {accessToken}
 ---
 
 ### 4.5. Update Kondisi Alat
-**Endpoint:** `PATCH /alat/:id/kondisi`
+**Endpoint:** `PUT /alat/:id/kondisi`
 **Access:** ADMIN, PETUGAS
 
 **Headers:**
@@ -1021,7 +1021,7 @@ Authorization: Bearer {accessToken}
 
 **Example Request:**
 ```
-GET /peminjaman?status_peminjaman=MENUNGGU_PERSETUJUAN
+GET /peminjaman?status=MENUNGGU_PERSETUJUAN
 ```
 
 **Response Success (200):**
@@ -1124,7 +1124,7 @@ Authorization: Bearer {accessToken}
 **Request Body (Approve):**
 ```json
 {
-  "action": "approve",
+  "action": "DISETUJUI",
   "catatan_petugas": "Disetujui, harap kembalikan tepat waktu",
   "durasi_hari": 7
 }
@@ -1133,7 +1133,7 @@ Authorization: Bearer {accessToken}
 **Request Body (Reject):**
 ```json
 {
-  "action": "reject",
+  "action": "DITOLAK",
   "alasan_ditolak": "Alat sedang dalam perbaikan"
 }
 ```

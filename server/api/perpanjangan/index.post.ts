@@ -87,7 +87,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Check ownership
+    // cek ownership
     if (peminjaman.id_user !== user.id_user) {
       throw createError({
         statusCode: 403,
@@ -95,7 +95,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    // Check peminjaman status
+    // cek stts peminjaman
     if (peminjaman.status_peminjaman !== 'DIPINJAM') {
       throw createError({
         statusCode: 400,

@@ -45,10 +45,9 @@ export default defineEventHandler(async (event) => {
 
     if (search) {
       where.OR = [
-        { kode_peminjaman: { contains: search } },
-        { alasan_peminjaman: { contains: search } },
-        { alat: { nama_alat: { contains: search } } },
-        { user: { nama_lengkap: { contains: search } } },
+        { kode_peminjaman: { contains: search, mode: 'insensitive' } },
+        { alat: { nama_alat: { contains: search, mode: 'insensitive' } } },
+        { users: { nama_lengkap: { contains: search, mode: 'insensitive' } } },
       ]
     }
 
