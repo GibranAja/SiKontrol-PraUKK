@@ -3,7 +3,8 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/ui', '@pinia/nuxt'],
-  css: ['~/assets/css/main.css'],
+
+  // HAPUS app.head - biarkan @nuxt/ui yang handle
 
   // Runtime Config
   runtimeConfig: {
@@ -16,9 +17,9 @@ export default defineNuxtConfig({
 
     // Rate limiting
     rateLimitAuth: parseInt(process.env.RATE_LIMIT_AUTH || '5'),
-    rateLimitAuthWindow: parseInt(process.env.RATE_LIMIT_AUTH_WINDOW || '900000'), // 15 min
+    rateLimitAuthWindow: parseInt(process.env.RATE_LIMIT_AUTH_WINDOW || '900000'),
     rateLimitApi: parseInt(process.env.RATE_LIMIT_API || '100'),
-    rateLimitApiWindow: parseInt(process.env.RATE_LIMIT_API_WINDOW || '60000'), // 1 min
+    rateLimitApiWindow: parseInt(process.env.RATE_LIMIT_API_WINDOW || '60000'),
 
     // Business rules
     dendaPerHari: parseInt(process.env.DENDA_PER_HARI || '5000'),
@@ -30,7 +31,7 @@ export default defineNuxtConfig({
     perpanjanganMaksDays: parseInt(process.env.PERPANJANGAN_MAKS_DAYS || '7'),
 
     // Upload config
-    uploadMaxSize: parseInt(process.env.UPLOAD_MAX_SIZE || '5242880'), // 5MB
+    uploadMaxSize: parseInt(process.env.UPLOAD_MAX_SIZE || '5242880'),
     uploadDir: process.env.UPLOAD_DIR || './public/uploads',
 
     // Public keys (exposed to client)
@@ -42,21 +43,11 @@ export default defineNuxtConfig({
 
   // Nitro Configuration
   nitro: {
-    // Experimental features
     experimental: {
       tasks: true,
       openAPI: true,
     },
 
-    // Scheduled Tasks (cron syntax)
-    scheduledTasks: {
-      // Daily at 08:00 - Due date reminders
-      '0 8 * * *': ['reminder:due'],
-      // Daily at 00:00 - Auto blacklist
-      '0 0 * * *': ['auto:blacklist'],
-    },
-
-    // Route rules for API
     routeRules: {
       '/api/**': {
         cors: true,
@@ -68,24 +59,11 @@ export default defineNuxtConfig({
       },
     },
 
-    // Storage for file uploads
     storage: {
       uploads: {
         driver: 'fs',
         base: './public/uploads',
       },
-    },
-  },
-
-  // App configuration
-  app: {
-    head: {
-      title: 'Sistem Peminjaman Alat',
-      meta: [
-        { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: 'Sistem Peminjaman Alat - Sekolah' },
-      ],
     },
   },
 })
