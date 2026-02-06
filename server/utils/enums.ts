@@ -86,6 +86,7 @@ export const AktivitasType = {
   LOGIN: 'LOGIN',
   LOGOUT: 'LOGOUT',
   REGISTER: 'REGISTER',
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD',
 
   // Users
   CREATE_USER: 'CREATE_USER',
@@ -131,6 +132,7 @@ export const AktivitasTypeDisplay: Record<string, string> = {
   LOGIN: 'Login ke sistem',
   LOGOUT: 'Logout dari sistem',
   REGISTER: 'Registrasi akun baru',
+  CHANGE_PASSWORD: 'Mengubah password',
   CREATE_USER: 'Membuat user baru',
   UPDATE_USER: 'Memperbarui data user',
   DELETE_USER: 'Menghapus user',

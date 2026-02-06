@@ -191,7 +191,186 @@ GET /users?page=1&limit=10&role=PEMINJAM&status_akun=AKTIF
 
 ---
 
-### 2.2. Get User Profile
+### 2.2. Create New User (Admin Only)
+**Endpoint:** `POST /users`
+**Access:** ADMIN only
+**Auth Required:** Yes
+
+**Headers:**
+```
+Authorization: Bearer {accessToken}
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "username": "petugas_baru",
+  "password": "PetugasPass123",
+  "nama_lengkap": "Hendra Gunawan",
+  "role": "PETUGAS",
+  "kelas": "Staff",
+  "jenis_kelamin": "Laki-laki",
+  "status_akun": "AKTIF"
+}
+```
+
+**Field Rules:**
+| Field | Type | Rules |
+|-------|------|-------|
+| `username` | string | 3-50 chars, alphanumeric + underscore, unique |
+| `password` | string | minimum 6 chars |
+| `nama_lengkap` | string | 2-100 chars |
+| `role` | enum | "ADMIN" \| "PETUGAS" \| "PEMINJAM" |
+| `kelas` | string | 1-20 chars |
+| `jenis_kelamin` | enum | "Laki-laki" \| "Perempuan" |
+| `status_akun` | enum | "AKTIF" \| "DIBLOKIR" \| "NONAKTIF" (optional, default: "AKTIF") |
+
+**Response Success (201):**
+```json
+{
+  "success": true,
+  "message": "User berhasil dibuat",
+  "data": {
+    "id_user": 9,
+    "username": "petugas_baru",
+    "nama_lengkap": "Hendra Gunawan",
+    "role": "PETUGAS",
+    "kelas": "Staff",
+    "jenis_kelamin": "Laki-laki",
+    "status_akun": "AKTIF",
+    "created_at": "2026-02-06T10:25:00.000Z"
+  }
+}
+```
+
+**Error Response - Not Admin (403):**
+```json
+{
+  "success": false,
+  "code": "FORBIDDEN",
+  "message": "Hanya admin yang dapat membuat user baru"
+}
+```
+
+**Error Response - Invalid Data (400):**
+```json
+{
+  "success": false,
+  "code": "VALIDATION_ERROR",
+  "message": "Data tidak valid",
+  "errors": [
+    {
+      "field": "username",
+      "message": "Username minimal 3 karakter"
+    },
+    {
+      "field": "password",
+      "message": "Password minimal 6 karakter"
+    }
+  ]
+}
+```
+
+**Error Response - Username Already Exists (409):**
+```json
+{
+  "success": false,
+  "code": "CONFLICT",
+  "message": "Username sudah terdaftar"
+}
+```
+
+**Error Response - Missing Authorization (401):**
+```json
+{
+  "success": false,
+  "code": "UNAUTHORIZED",
+  "message": "Akses tidak diizinkan"
+}
+```
+
+**Testing Examples:**
+
+**1. Create PETUGAS User (Success):**
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Authorization: Bearer {accessToken}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "petugas_baru",
+    "password": "PetugasPass123",
+    "nama_lengkap": "Hendra Gunawan",
+    "role": "PETUGAS",
+    "kelas": "Staff",
+    "jenis_kelamin": "Laki-laki",
+    "status_akun": "AKTIF"
+  }'
+```
+
+**2. Create PEMINJAM User (Success):**
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Authorization: Bearer {accessToken}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "siswa_baru1",
+    "password": "SiswaPass123",
+    "nama_lengkap": "Budi Santoso",
+    "role": "PEMINJAM",
+    "kelas": "XII RPL 1",
+    "jenis_kelamin": "Laki-laki"
+  }'
+```
+
+**3. Create with Invalid Role (400):**
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Authorization: Bearer {accessToken}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user_invalid",
+    "password": "Pass123",
+    "nama_lengkap": "Invalid User",
+    "role": "SUPERUSER",
+    "kelas": "XII",
+    "jenis_kelamin": "Laki-laki"
+  }'
+```
+
+**4. Create with Duplicate Username (409):**
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Authorization: Bearer {accessToken}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin",
+    "password": "NewPass123",
+    "nama_lengkap": "New Admin",
+    "role": "ADMIN",
+    "kelas": "Staff",
+    "jenis_kelamin": "Laki-laki"
+  }'
+```
+
+**5. Create Without Admin Access (403):**
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Authorization: Bearer {petugasAccessToken}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "user_baru",
+    "password": "Pass123",
+    "nama_lengkap": "User Baru",
+    "role": "PETUGAS",
+    "kelas": "Staff",
+    "jenis_kelamin": "Laki-laki"
+  }'
+```
+
+---
+
+### 2.3. Get User Profile
 **Endpoint:** `GET /users/profile`
 **Access:** Authenticated
 
@@ -225,7 +404,7 @@ Authorization: Bearer {accessToken}
 
 ---
 
-### 2.3. Get User by ID
+### 2.4. Get User by ID
 **Endpoint:** `GET /users/:id`
 **Access:** ADMIN, PETUGAS (or own profile)
 
@@ -261,8 +440,8 @@ GET /users/3
 
 ---
 
-### 2.4. Update User
-**Endpoint:** `PATCH /users/:id`
+### 2.5. Update User
+**Endpoint:** `PUT /users/:id`
 **Access:** ADMIN
 
 **Headers:**
@@ -295,7 +474,7 @@ Authorization: Bearer {accessToken}
 
 ---
 
-### 2.5. Change User Status
+### 2.6. Change User Status
 **Endpoint:** `PATCH /users/:id/status`
 **Access:** ADMIN
 
@@ -329,7 +508,7 @@ Authorization: Bearer {accessToken}
 
 ---
 
-### 2.6. Change Password
+### 2.7. Change Password
 **Endpoint:** `PATCH /users/change-password`
 **Access:** Authenticated
 
@@ -357,7 +536,7 @@ Authorization: Bearer {accessToken}
 
 ---
 
-### 2.7. Delete User (Soft Delete)
+### 2.8. Delete User (Soft Delete)
 **Endpoint:** `DELETE /users/:id`
 **Access:** ADMIN
 

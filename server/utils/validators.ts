@@ -50,6 +50,14 @@ export const refreshTokenSchema = z.object({
   refreshToken: z.string().min(1, 'Refresh token wajib diisi'),
 })
 
+export const changePasswordSchema = z.object({
+  new_password: z
+    .string()
+    .min(6, 'Password baru minimal 6 karakter')
+    .max(100, 'Password baru maksimal 100 karakter'),
+  confirm_password: z.string().min(1, 'Konfirmasi password wajib diisi'),
+})
+
 // ========== USER SCHEMAS ==========
 
 export const createUserSchema = z.object({
