@@ -250,7 +250,7 @@ onMounted(() => {
             <p class="text-sm text-slate-500">Buat kategori untuk mengelompokkan alat</p>
           </div>
         </div>
-        
+
         <form @submit.prevent="handleCreate" class="space-y-4">
           <UFormField label="Nama Kategori" required>
             <UInput
@@ -300,7 +300,7 @@ onMounted(() => {
             <p class="text-sm text-slate-500">Perbarui informasi kategori</p>
           </div>
         </div>
-        
+
         <form @submit.prevent="handleUpdate" class="space-y-4">
           <UFormField label="Nama Kategori" required>
             <UInput

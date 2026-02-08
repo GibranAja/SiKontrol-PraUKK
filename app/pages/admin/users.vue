@@ -90,7 +90,7 @@ async function fetchUsers() {
     if (roleFilter.value && roleFilter.value !== 'ALL') params.role = roleFilter.value
     if (statusFilter.value && statusFilter.value !== 'ALL') params.status_akun = statusFilter.value
 
-    const response = await $fetch('/api/users', { 
+    const response = await $fetch('/api/users', {
       query: params,
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,
@@ -262,8 +262,8 @@ async function toggleUserStatus(userData: any) {
       },
     })
     if (response?.data) {
-      toast.add({ 
-        title: 'Berhasil', 
+      toast.add({
+        title: 'Berhasil',
         description: `Status pengguna ${newStatus === 'AKTIF' ? 'diaktifkan' : 'diblokir'}`,
         color: 'success'
       })

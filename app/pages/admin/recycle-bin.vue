@@ -100,7 +100,7 @@ async function handleRestore() {
   try {
     let endpoint = ''
     let id = 0
-    
+
     switch (selectedType.value) {
       case 'user':
         endpoint = `/api/recycle-bin/users/${selectedItem.value.id_user}/restore`
@@ -116,7 +116,7 @@ async function handleRestore() {
         break
     }
 
-    const response = await $fetch(endpoint, { 
+    const response = await $fetch(endpoint, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,
@@ -127,7 +127,7 @@ async function handleRestore() {
       isRestoreModalOpen.value = false
       selectedItem.value = null
       selectedType.value = ''
-      
+
       // Refresh data
       switch (activeTab.value) {
         case 'users':
@@ -161,7 +161,7 @@ async function handlePermanentDelete() {
   isLoading.value = true
   try {
     let endpoint = ''
-    
+
     switch (selectedType.value) {
       case 'user':
         endpoint = `/api/recycle-bin/users/${selectedItem.value.id_user}/permanent`
@@ -174,7 +174,7 @@ async function handlePermanentDelete() {
         break
     }
 
-    const response = await $fetch(endpoint, { 
+    const response = await $fetch(endpoint, {
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,
@@ -185,7 +185,7 @@ async function handlePermanentDelete() {
       isPermanentDeleteModalOpen.value = false
       selectedItem.value = null
       selectedType.value = ''
-      
+
       // Refresh data
       switch (activeTab.value) {
         case 'users':

@@ -97,7 +97,7 @@ async function handleCreateImageUpload(event: Event) {
       toast.add({ title: 'Error', description: 'Ukuran gambar maksimal 2MB', color: 'error' })
       return
     }
-    
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.add({ title: 'Error', description: 'File harus berupa gambar', color: 'error' })
@@ -123,7 +123,7 @@ async function handleEditImageUpload(event: Event) {
       toast.add({ title: 'Error', description: 'Ukuran gambar maksimal 2MB', color: 'error' })
       return
     }
-    
+
     if (!file.type.startsWith('image/')) {
       toast.add({ title: 'Error', description: 'File harus berupa gambar', color: 'error' })
       return
@@ -170,7 +170,7 @@ async function fetchEquipment() {
     if (kategoriFilter.value && kategoriFilter.value !== 'ALL') params.id_kategori = kategoriFilter.value
     if (kondisiFilter.value && kondisiFilter.value !== 'ALL') params.kondisi = kondisiFilter.value
 
-    const response = await $fetch('/api/alat', { 
+    const response = await $fetch('/api/alat', {
       query: params,
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,
@@ -484,7 +484,7 @@ onMounted(() => {
           <div v-else class="w-full h-full flex items-center justify-center">
             <UIcon name="i-lucide-package" class="text-6xl text-slate-300" />
           </div>
-          
+
           <!-- Stock Badge -->
           <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
             <span class="text-xs font-bold text-slate-700">Stok: {{ item.stok }}</span>
