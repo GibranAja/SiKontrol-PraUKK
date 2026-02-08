@@ -3,7 +3,6 @@ import { useAuthStore } from '~/stores/auth'
 
 export const useAuth = () => {
   const authStore = useAuthStore()
-  const router = useRouter()
   const toast = useToast()
 
   const isLoginLoading = ref(false)
@@ -37,8 +36,8 @@ export const useAuth = () => {
           icon: 'i-lucide-check-circle',
         })
 
-        // Redirect by role
-        redirectByRole(response.data.user.role)
+        // Redirect by role - await untuk memastikan redirect berhasil
+        await redirectByRole(response.data.user.role)
         return true
       }
     } catch (error: any) {
@@ -71,7 +70,7 @@ export const useAuth = () => {
         })
 
         // Redirect to login
-        await router.push('/auth/login')
+        await navigateTo('/auth/login', { replace: true })
         return true
       }
     } catch (error: any) {
@@ -100,7 +99,7 @@ export const useAuth = () => {
       // Logout even if API fails
     } finally {
       authStore.clearAuth()
-      await router.push('/auth/login')
+      await navigateTo('/auth/login', { replace: true })
       toast.add({
         title: 'Logout Berhasil',
         description: 'Anda telah keluar dari sistem.',
@@ -138,7 +137,7 @@ export const useAuth = () => {
   /**
    * Redirect berdasarkan role setelah login
    */
-  function redirectByRole(role: string) {
+  async function redirectByRole(role: string) {
     const roleRoutes: Record<string, string> = {
       ADMIN: '/admin',
       PETUGAS: '/petugas',
@@ -146,7 +145,7 @@ export const useAuth = () => {
     }
 
     const target = roleRoutes[role] || '/auth/login'
-    router.push(target)
+    await navigateTo(target, { replace: true })
   }
 
   /**
@@ -187,6 +186,7 @@ export const useAuth = () => {
 
   return {
     // State
+    user: computed(() => authStore.user),
     isLoginLoading,
     isRegisterLoading,
     loginErrors,

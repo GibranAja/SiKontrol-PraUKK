@@ -77,6 +77,11 @@ export default defineEventHandler(async (event: H3Event) => {
     return
   }
 
+  // Skip internal Nuxt routes (icons, etc.)
+  if (path.startsWith('/api/_')) {
+    return
+  }
+
   // Skip public routes
   if (PUBLIC_ROUTES.some(route => path === route || path.startsWith(route + '?'))) {
     return

@@ -33,10 +33,7 @@ const kelasOptions = [
   'XII MM 1', 'XII MM 2',
 ]
 
-const genderOptions = [
-  { label: 'Laki-laki', value: 'Laki-laki' },
-  { label: 'Perempuan', value: 'Perempuan' },
-]
+const genderOptions = ['Laki-laki', 'Perempuan']
 
 const passwordMismatch = computed(() => {
   if (form.confirmPassword && form.password !== form.confirmPassword) {
@@ -46,14 +43,14 @@ const passwordMismatch = computed(() => {
 })
 
 const isFormValid = computed(() => {
-  return (
-    form.username.trim().length >= 3 &&
-    form.password.length >= 6 &&
-    form.password === form.confirmPassword &&
-    form.nama_lengkap.trim().length >= 2 &&
-    form.kelas &&
-    form.jenis_kelamin
-  )
+  const hasUsername = form.username.trim().length >= 3
+  const hasValidPassword = form.password.length >= 6
+  const passwordsMatch = form.password === form.confirmPassword && form.confirmPassword.length > 0
+  const hasFullName = form.nama_lengkap.trim().length >= 2
+  const hasKelas = form.kelas !== ''
+  const hasGender = form.jenis_kelamin !== ''
+
+  return hasUsername && hasValidPassword && passwordsMatch && hasFullName && hasKelas && hasGender
 })
 
 async function handleSubmit() {
@@ -132,7 +129,6 @@ async function handleSubmit() {
           <USelect
             v-model="form.jenis_kelamin"
             :items="genderOptions"
-            value-key="value"
             placeholder="Pilih"
             icon="i-lucide-users"
             size="lg"
@@ -195,23 +191,18 @@ async function handleSubmit() {
       </UFormField>
 
       <!-- Submit Button -->
-      <UButton
+      <button
         type="submit"
-        block
-        size="lg"
-        color="primary"
-        variant="solid"
-        :loading="isRegisterLoading"
         :disabled="!isFormValid || isRegisterLoading"
-        class="font-heading font-bold mt-2 bg-teal-600 hover:bg-teal-700 text-white shadow-lg shadow-teal-600/20 hover:shadow-xl hover:shadow-teal-600/30 disabled:bg-slate-400 disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200"
+        class="w-full px-4 py-3 font-heading font-bold text-white rounded-lg transition-all duration-200 mt-2 bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20 hover:shadow-xl hover:shadow-teal-600/30 disabled:bg-slate-400 disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none"
       >
-        <template v-if="!isRegisterLoading">
-          Daftar Sekarang
-        </template>
-        <template v-else>
+        <span v-if="isRegisterLoading">
           Memproses...
-        </template>
-      </UButton>
+        </span>
+        <span v-else>
+          Daftar Sekarang
+        </span>
+      </button>
     </form>
 
     <!-- Divider -->

@@ -16,7 +16,14 @@ const form = reactive({
 
 const showPassword = ref(false)
 
+// Computed untuk validasi form
+const isFormValid = computed(() => {
+  return form.username.trim().length > 0 && form.password.length > 0
+})
+
 async function handleSubmit() {
+  if (!isFormValid.value) return
+
   await login({
     username: form.username.trim(),
     password: form.password,
@@ -78,23 +85,18 @@ async function handleSubmit() {
       </UFormField>
 
       <!-- Submit Button -->
-      <UButton
+      <button
         type="submit"
-        block
-        size="lg"
-        color="primary"
-        variant="solid"
-        :loading="isLoginLoading"
-        :disabled="!form.username || !form.password || isLoginLoading"
-        class="font-heading font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-lg shadow-teal-600/20 hover:shadow-xl hover:shadow-teal-600/30 disabled:bg-slate-400 disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none transition-all duration-200"
+        :disabled="!isFormValid || isLoginLoading"
+        class="w-full px-4 py-3 font-heading font-bold text-white rounded-lg transition-all duration-200 bg-teal-600 hover:bg-teal-700 shadow-lg shadow-teal-600/20 hover:shadow-xl hover:shadow-teal-600/30 disabled:bg-slate-400 disabled:opacity-70 disabled:cursor-not-allowed disabled:shadow-none"
       >
-        <template v-if="!isLoginLoading">
-          Masuk
-        </template>
-        <template v-else>
+        <span v-if="isLoginLoading">
           Memproses...
-        </template>
-      </UButton>
+        </span>
+        <span v-else>
+          Masuk
+        </span>
+      </button>
     </form>
 
     <!-- Divider -->
