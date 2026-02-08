@@ -2,9 +2,37 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@pinia/nuxt'],
+  modules: ['@nuxt/ui', '@pinia/nuxt', '@nuxt/fonts'],
+  css: ['@/assets/css/main.css'],
 
-  // HAPUS app.head - biarkan @nuxt/ui yang handle
+  // Completely disable dark mode
+  colorMode: {
+    preference: 'light',
+    fallback: 'light',
+    classSuffix: '',
+  },
+
+  // Font Configuration
+  fonts: {
+    families: [
+      { name: 'Geist', provider: 'google', weights: [400, 500, 600, 700] },
+      { name: 'Unbounded', provider: 'google', weights: [400, 500, 600, 700, 800] },
+    ],
+  },
+
+  // Page & Layout Transitions
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
+    layoutTransition: { name: 'layout', mode: 'out-in' },
+    head: {
+      htmlAttrs: { lang: 'id' },
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'description', content: 'Sistem Peminjaman Alat - SiKontrol' },
+      ],
+    },
+  },
 
   // Runtime Config
   runtimeConfig: {

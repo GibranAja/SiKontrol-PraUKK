@@ -1,2 +1,173 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+/* ========== FONT CONFIGURATION ========== */
+/* Geist (70% usage) - Body text, UI elements */
+/* Unbounded (30% usage) - Headings, brand elements */
+
+@theme {
+  /* Color Palette - Deep Teal untuk Sistem Peminjaman Alat */
+  --color-primary-50: #eef8f6;
+  --color-primary-100: #d5eeea;
+  --color-primary-200: #aeddd7;
+  --color-primary-300: #7fc5be;
+  --color-primary-400: #55a8a0;
+  --color-primary-500: #3b8d86;
+  --color-primary-600: #2e716c;
+  --color-primary-700: #285b58;
+  --color-primary-800: #244a48;
+  --color-primary-900: #223e3d;
+  --color-primary-950: #0f2322;
+
+  /* Neutral Slate */
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
+
+  /* Font families */
+  --font-sans: 'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Unbounded', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ========== FORCE LIGHT MODE ========== */
+html,
+html.light,
+html:root,
+body {
+  color-scheme: light !important;
+  background-color: #f8fafc !important;
+}
+
+/* Disable dark mode completely */
+html.dark,
+html[data-color-mode="dark"],
+html[class*="dark"] {
+  color-scheme: light !important;
+  background-color: #f8fafc !important;
+}
+
+/* Force all backgrounds to light */
+* {
+  color-scheme: light;
+}
+
+/* Override any dark mode classes */
+.dark {
+  color-scheme: light !important;
+}
+
+/* ========== PAGE TRANSITIONS ========== */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* ========== LAYOUT TRANSITIONS ========== */
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+}
+
+/* ========== GLOBAL STYLES ========== */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Headings use Unbounded */
+h1, h2, h3, h4, h5, h6,
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+/* ========== AUTH PAGE STYLES ========== */
+/* Animated gradient background for left section */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.auth-gradient {
+  background: linear-gradient(
+    135deg,
+    #0f2322 0%,
+    #1e293b 25%,
+    #2e716c 50%,
+    #334155 75%,
+    #223e3d 100%
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+@keyframes float-delayed {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(-5deg); }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+.float-delayed {
+  animation: float-delayed 8s ease-in-out infinite;
+}
+
+/* Grid pattern overlay */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Fade in animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
