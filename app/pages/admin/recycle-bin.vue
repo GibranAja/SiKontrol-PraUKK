@@ -467,6 +467,7 @@ onMounted(() => {
 
     <!-- Restore Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isRestoreModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 bg-teal-100 rounded-full mx-auto mb-4">
           <UIcon name="i-lucide-rotate-ccw" class="text-2xl text-teal-600" />
@@ -482,10 +483,12 @@ onMounted(() => {
           </UButton>
         </div>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Permanent Delete Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isPermanentDeleteModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
           <UIcon name="i-lucide-alert-triangle" class="text-2xl text-red-600" />
@@ -501,6 +504,7 @@ onMounted(() => {
           </UButton>
         </div>
       </div>
+      </template>
     </LazyUModal>
   </div>
 </template>

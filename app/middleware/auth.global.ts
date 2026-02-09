@@ -1,6 +1,9 @@
 import { useAuthStore } from '~/stores/auth'
 
 export default defineNuxtRouteMiddleware((to) => {
+  // Skip auth checks during SSR since localStorage is not available
+  if (import.meta.server) return
+
   const authStore = useAuthStore()
 
   // Load from storage if not loaded yet

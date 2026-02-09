@@ -54,6 +54,7 @@ const editForm = reactive({
 })
 
 const newPassword = ref('')
+const confirmPassword = ref('')
 
 const roleOptions = [
   { label: 'Admin', value: 'ADMIN' },
@@ -140,7 +141,7 @@ async function handleCreate() {
       await fetchUsers()
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    toast.add({ title: 'Gagal', description: error.data?.error?.message || error.data?.message || 'Terjadi kesalahan', color: 'error' })
   } finally {
     isLoading.value = false
   }
@@ -179,7 +180,7 @@ async function handleUpdate() {
       await fetchUsers()
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    toast.add({ title: 'Gagal', description: error.data?.error?.message || error.data?.message || 'Terjadi kesalahan', color: 'error' })
   } finally {
     isLoading.value = false
   }
@@ -209,7 +210,7 @@ async function handleDelete() {
       await fetchUsers()
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    toast.add({ title: 'Gagal', description: error.data?.error?.message || error.data?.message || 'Terjadi kesalahan', color: 'error' })
   } finally {
     isLoading.value = false
   }
@@ -219,19 +220,23 @@ async function handleDelete() {
 function openResetPasswordModal(userData: any) {
   selectedUser.value = userData
   newPassword.value = ''
+  confirmPassword.value = ''
   isResetPasswordModalOpen.value = true
 }
 
 // Reset password
 async function handleResetPassword() {
   if (!selectedUser.value || !newPassword.value) return
+  if (newPassword.value !== confirmPassword.value) {
+    toast.add({ title: 'Gagal', description: 'Password baru dan konfirmasi password tidak cocok', color: 'error' })
+    return
+  }
   isLoading.value = true
   try {
-    const response: any = await $fetch(`/api/users/change-password`, {
-      method: 'PATCH',
+    const response: any = await $fetch(`/api/users/${selectedUser.value.id_user}`, {
+      method: 'PUT',
       body: {
-        id_user: selectedUser.value.id_user,
-        new_password: newPassword.value,
+        password: newPassword.value,
       },
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,
@@ -242,9 +247,10 @@ async function handleResetPassword() {
       isResetPasswordModalOpen.value = false
       selectedUser.value = null
       newPassword.value = ''
+      confirmPassword.value = ''
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    toast.add({ title: 'Gagal', description: error.data?.error?.message || error.data?.message || 'Terjadi kesalahan', color: 'error' })
   } finally {
     isLoading.value = false
   }
@@ -270,7 +276,7 @@ async function toggleUserStatus(userData: any) {
       await fetchUsers()
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    toast.add({ title: 'Gagal', description: error.data?.error?.message || error.data?.message || 'Terjadi kesalahan', color: 'error' })
   }
 }
 
@@ -484,6 +490,7 @@ onMounted(() => {
 
     <!-- Create Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isCreateModalOpen">
+      <template #content>
       <div class="p-6">
         <h3 class="font-heading font-bold text-xl text-slate-900 mb-6">Tambah Pengguna Baru</h3>
         <form @submit.prevent="handleCreate" class="space-y-4">
@@ -521,10 +528,12 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Edit Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isEditModalOpen">
+      <template #content>
       <div class="p-6">
         <h3 class="font-heading font-bold text-xl text-slate-900 mb-6">Edit Pengguna</h3>
         <form @submit.prevent="handleUpdate" class="space-y-4">
@@ -562,10 +571,12 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Delete Confirmation Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isDeleteModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
           <UIcon name="i-lucide-trash-2" class="text-2xl text-red-600" />
@@ -580,10 +591,12 @@ onMounted(() => {
           <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus</UButton>
         </div>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Reset Password Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isResetPasswordModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mx-auto mb-4">
           <UIcon name="i-lucide-key" class="text-2xl text-purple-600" />
@@ -601,14 +614,26 @@ onMounted(() => {
               size="lg"
             />
           </UFormField>
+          <UFormField label="Konfirmasi Password" required>
+            <UInput
+              v-model="confirmPassword"
+              type="password"
+              placeholder="Ulangi password baru"
+              size="lg"
+            />
+          </UFormField>
+          <p v-if="confirmPassword && newPassword !== confirmPassword" class="text-sm text-red-500">
+            Password tidak cocok
+          </p>
           <div class="flex justify-center space-x-3 pt-2">
             <UButton type="button" variant="outline" @click="isResetPasswordModalOpen = false">Batal</UButton>
-            <UButton type="submit" color="primary" :loading="isLoading" :disabled="newPassword.length < 6">
+            <UButton type="submit" color="primary" :loading="isLoading" :disabled="newPassword.length < 6 || newPassword !== confirmPassword">
               Reset Password
             </UButton>
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
   </div>
 </template>

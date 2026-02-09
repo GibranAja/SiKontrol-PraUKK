@@ -222,7 +222,9 @@ async function handleCreate() {
       await fetchEquipment()
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    const errorMessage = error.data?.data?.message || error.data?.message || error.message || 'Terjadi kesalahan'
+    toast.add({ title: 'Gagal', description: errorMessage, color: 'error' })
+    console.error('Create equipment error:', error)
   } finally {
     isLoading.value = false
   }
@@ -263,7 +265,9 @@ async function handleUpdate() {
       await fetchEquipment()
     }
   } catch (error: any) {
-    toast.add({ title: 'Gagal', description: error.data?.message || 'Terjadi kesalahan', color: 'error' })
+    const errorMessage = error.data?.data?.message || error.data?.message || error.message || 'Terjadi kesalahan'
+    toast.add({ title: 'Gagal', description: errorMessage, color: 'error' })
+    console.error('Create equipment error:', error)
   } finally {
     isLoading.value = false
   }
@@ -582,8 +586,10 @@ onMounted(() => {
 
     <!-- Create Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isCreateModalOpen">
+      <template #content>
       <div class="p-6 max-h-[90vh] overflow-y-auto">
-        <h3 class="font-heading font-bold text-xl text-slate-900 mb-6">Tambah Alat Baru</h3>
+        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Tambah Alat Baru</UDialogTitle>
+        <UDialogDescription class="text-slate-600 mb-6">Isi form di bawah untuk menambahkan alat baru ke sistem</UDialogDescription>
         <form @submit.prevent="handleCreate" class="space-y-4">
           <!-- Image Upload -->
           <UFormField label="Gambar Alat (Base64)">
@@ -646,12 +652,15 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Edit Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isEditModalOpen">
+      <template #content>
       <div class="p-6 max-h-[90vh] overflow-y-auto">
-        <h3 class="font-heading font-bold text-xl text-slate-900 mb-6">Edit Alat</h3>
+        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Edit Alat</UDialogTitle>
+        <UDialogDescription class="text-slate-600 mb-6">Perbarui informasi alat {{ selectedEquipment?.nama_alat }}</UDialogDescription>
         <form @submit.prevent="handleUpdate" class="space-y-4">
           <!-- Image Upload -->
           <UFormField label="Gambar Alat (Base64)">
@@ -706,13 +715,15 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Stock Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isStockModalOpen">
+      <template #content>
       <div class="p-6">
-        <h3 class="font-heading font-bold text-xl text-slate-900 mb-4">Update Stok</h3>
-        <p class="text-slate-600 mb-4">{{ selectedEquipment?.nama_alat }}</p>
+        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Update Stok</UDialogTitle>
+        <UDialogDescription class="text-slate-600 mb-4">Ubah jumlah stok untuk {{ selectedEquipment?.nama_alat }}</UDialogDescription>
         <form @submit.prevent="handleUpdateStock" class="space-y-4">
           <UFormField label="Jumlah Stok" required>
             <UInput v-model.number="stockForm.stok" type="number" min="0" size="lg" />
@@ -723,13 +734,15 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Condition Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isConditionModalOpen">
+      <template #content>
       <div class="p-6">
-        <h3 class="font-heading font-bold text-xl text-slate-900 mb-4">Update Kondisi</h3>
-        <p class="text-slate-600 mb-4">{{ selectedEquipment?.nama_alat }}</p>
+        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Update Kondisi</UDialogTitle>
+        <UDialogDescription class="text-slate-600 mb-4">Ubah kondisi untuk {{ selectedEquipment?.nama_alat }}</UDialogDescription>
         <form @submit.prevent="handleUpdateCondition" class="space-y-4">
           <UFormField label="Kondisi" required>
             <USelect v-model="conditionForm.kondisi" :items="kondisiOptions" size="lg" />
@@ -740,24 +753,27 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Delete Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isDeleteModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
           <UIcon name="i-lucide-trash-2" class="text-2xl text-red-600" />
         </div>
-        <h3 class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Hapus Alat?</h3>
-        <p class="text-slate-600 text-center mb-6">
+        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Hapus Alat?</UDialogTitle>
+        <UDialogDescription class="text-slate-600 text-center mb-6">
           Anda yakin ingin menghapus <strong>{{ selectedEquipment?.nama_alat }}</strong>?
           <br />Data akan masuk ke Recycle Bin.
-        </p>
+        </UDialogDescription>
         <div class="flex justify-center space-x-3">
           <UButton variant="outline" @click="isDeleteModalOpen = false">Batal</UButton>
           <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus</UButton>
         </div>
       </div>
+      </template>
     </LazyUModal>
   </div>
 </template>

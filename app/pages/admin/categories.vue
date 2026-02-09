@@ -240,6 +240,7 @@ onMounted(() => {
 
     <!-- Create Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isCreateModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center space-x-3 mb-6">
           <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -286,10 +287,12 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Edit Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isEditModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center space-x-3 mb-6">
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -335,10 +338,12 @@ onMounted(() => {
           </div>
         </form>
       </div>
+      </template>
     </LazyUModal>
 
     <!-- Delete Confirmation Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isDeleteModalOpen">
+      <template #content>
       <div class="p-6">
         <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
           <UIcon name="i-lucide-trash-2" class="text-2xl text-red-600" />
@@ -358,6 +363,7 @@ onMounted(() => {
           <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus</UButton>
         </div>
       </div>
+      </template>
     </LazyUModal>
   </div>
 </template>

@@ -7,7 +7,7 @@ definePageMeta({
 
 useHead({
   title: 'Log Aktivitas - SiKontrol',
-})
+})  
 
 const { user } = useAuth()
 const authStore = useAuthStore()
