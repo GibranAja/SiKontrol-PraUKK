@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
+import { CalendarDate, DateFormatter, getLocalTimeZone, today, type DateValue } from '@internationalized/date'
 
 definePageMeta({
   layout: 'admin',
@@ -7,7 +8,7 @@ definePageMeta({
 
 useHead({
   title: 'Log Aktivitas - SiKontrol',
-})  
+})
 
 const { user } = useAuth()
 const authStore = useAuthStore()
@@ -23,11 +24,35 @@ const pagination = ref({
 
 // Filters
 const search = ref('')
-const dateFrom = ref('')
-const dateTo = ref('')
+const selectedDates = ref<DateValue[]>([today(getLocalTimeZone())])
+const isCalendarOpen = ref(false)
+
+// Date formatter
+const df = new DateFormatter('id-ID', {
+  dateStyle: 'medium'
+})
 
 // Statistics
 const statistics = ref<any>(null)
+
+// Disable future dates
+function isDateDisabled(date: DateValue) {
+  const todayDate = today(getLocalTimeZone())
+  return date.compare(todayDate) > 0
+}
+
+// Format selected dates for display
+const selectedDatesText = computed(() => {
+  if (!selectedDates.value || selectedDates.value.length === 0) {
+    return 'Pilih tanggal...'
+  }
+
+  if (selectedDates.value.length === 1) {
+    return df.format(selectedDates.value[0].toDate(getLocalTimeZone()))
+  }
+
+  return `${selectedDates.value.length} tanggal dipilih`
+})
 
 // Fetch logs
 async function fetchLogs() {
@@ -38,8 +63,28 @@ async function fetchLogs() {
       limit: pagination.value.limit,
     }
     if (search.value) params.aktivitas = search.value
-    if (dateFrom.value) params.tanggal_dari = dateFrom.value
-    if (dateTo.value) params.tanggal_sampai = dateTo.value
+
+    // Convert selected dates to ISO format for API
+    if (selectedDates.value && selectedDates.value.length > 0) {
+      const sortedDates = [...selectedDates.value].sort((a, b) => a.compare(b))
+
+      // Format dates properly without timezone conversion
+      const firstDate = sortedDates[0]
+      const lastDate = sortedDates[sortedDates.length - 1]
+
+      // Format: YYYY-MM-DD using the date components directly
+      const formatDateString = (date: DateValue) => {
+        const year = date.year
+        const month = String(date.month).padStart(2, '0')
+        const day = String(date.day).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+
+      // Use the first and last date for range
+      // Add time to include the entire day (start at 00:00:00, end at 23:59:59)
+      params.tanggal_dari = formatDateString(firstDate) + 'T00:00:00'
+      params.tanggal_sampai = formatDateString(lastDate) + 'T23:59:59'
+    }
 
     const response = await $fetch('/api/log-aktivitas', {
       query: params,
@@ -48,7 +93,24 @@ async function fetchLogs() {
       },
     })
     if (response.data) {
-      logs.value = response.data
+      let filteredLogs = response.data
+
+      // Filter logs to only show logs from selected dates
+      if (selectedDates.value && selectedDates.value.length > 0) {
+        const selectedDateStrings = selectedDates.value.map(date => {
+          const year = date.year
+          const month = String(date.month).padStart(2, '0')
+          const day = String(date.day).padStart(2, '0')
+          return `${year}-${month}-${day}`
+        })
+
+        filteredLogs = response.data.filter((log: any) => {
+          const logDate = new Date(log.timestamp).toISOString().split('T')[0]
+          return selectedDateStrings.includes(logDate)
+        })
+      }
+
+      logs.value = filteredLogs
       if (response.meta) {
         pagination.value = {
           page: response.meta.page || 1,
@@ -115,10 +177,10 @@ function getActivityColor(aktivitas: string) {
 }
 
 // Watchers
-watch([search, dateFrom, dateTo], () => {
+watch([search, selectedDates], () => {
   pagination.value.page = 1
   fetchLogs()
-})
+}, { deep: true })
 
 watch(() => pagination.value.page, fetchLogs)
 
@@ -199,27 +261,35 @@ onMounted(() => {
 
     <!-- Filters -->
     <div class="bg-white rounded-xl p-6 shadow-md border border-slate-100">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <UInput
           v-model="search"
           placeholder="Cari aktivitas..."
           icon="i-lucide-search"
           size="lg"
         />
-        <UInput
-          v-model="dateFrom"
-          type="date"
-          placeholder="Tanggal Dari"
-          icon="i-lucide-calendar"
-          size="lg"
-        />
-        <UInput
-          v-model="dateTo"
-          type="date"
-          placeholder="Tanggal Sampai"
-          icon="i-lucide-calendar"
-          size="lg"
-        />
+        <UPopover v-model:open="isCalendarOpen">
+          <UButton
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-calendar"
+            size="lg"
+            block
+            class="justify-start font-normal"
+          >
+            {{ selectedDatesText }}
+          </UButton>
+
+          <template #content>
+            <UCalendar
+              v-model="selectedDates"
+              multiple
+              :is-date-disabled="isDateDisabled"
+              :number-of-months="2"
+              class="p-2"
+            />
+          </template>
+        </UPopover>
       </div>
     </div>
 
