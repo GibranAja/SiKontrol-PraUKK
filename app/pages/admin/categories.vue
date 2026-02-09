@@ -241,24 +241,27 @@ onMounted(() => {
     <!-- Create Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isCreateModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center space-x-3 mb-6">
-          <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-            <UIcon name="i-lucide-folder-plus" class="text-2xl text-purple-600" />
+      <div class="w-full max-w-lg mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-folder-plus" class="text-xl text-purple-600" />
           </div>
           <div>
-            <h3 class="font-heading font-bold text-xl text-slate-900">Tambah Kategori Baru</h3>
-            <p class="text-sm text-slate-500">Buat kategori untuk mengelompokkan alat</p>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Tambah Kategori Baru</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Buat kategori untuk mengelompokkan alat</p>
           </div>
         </div>
 
-        <form @submit.prevent="handleCreate" class="space-y-4">
+        <!-- Modal Body -->
+        <form @submit.prevent="handleCreate" class="p-6 space-y-4">
           <UFormField label="Nama Kategori" required>
             <UInput
               v-model="createForm.nama_kategori"
               placeholder="Contoh: Komputer, Alat Peraga, dll"
               size="lg"
               icon="i-lucide-folder"
+              class="w-full"
             />
           </UFormField>
 
@@ -266,12 +269,14 @@ onMounted(() => {
             <UTextarea
               v-model="createForm.deskripsi"
               placeholder="Deskripsi kategori (opsional)"
-              :rows="3"
+              :rows="4"
               size="lg"
+              class="w-full"
             />
           </UFormField>
 
-          <div class="flex justify-end space-x-3 pt-4">
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
             <UButton type="button" variant="outline" @click="isCreateModalOpen = false">
               Batal
             </UButton>
@@ -293,23 +298,26 @@ onMounted(() => {
     <!-- Edit Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isEditModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center space-x-3 mb-6">
-          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <UIcon name="i-lucide-edit" class="text-2xl text-blue-600" />
+      <div class="w-full max-w-lg mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-edit" class="text-xl text-blue-600" />
           </div>
           <div>
-            <h3 class="font-heading font-bold text-xl text-slate-900">Edit Kategori</h3>
-            <p class="text-sm text-slate-500">Perbarui informasi kategori</p>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Edit Kategori</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Perbarui informasi kategori</p>
           </div>
         </div>
 
-        <form @submit.prevent="handleUpdate" class="space-y-4">
+        <!-- Modal Body -->
+        <form @submit.prevent="handleUpdate" class="p-6 space-y-4">
           <UFormField label="Nama Kategori" required>
             <UInput
               v-model="editForm.nama_kategori"
               size="lg"
               icon="i-lucide-folder"
+              class="w-full"
             />
           </UFormField>
 
@@ -317,12 +325,14 @@ onMounted(() => {
             <UTextarea
               v-model="editForm.deskripsi"
               placeholder="Deskripsi kategori (opsional)"
-              :rows="3"
+              :rows="4"
               size="lg"
+              class="w-full"
             />
           </UFormField>
 
-          <div class="flex justify-end space-x-3 pt-4">
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
             <UButton type="button" variant="outline" @click="isEditModalOpen = false">
               Batal
             </UButton>
@@ -344,23 +354,37 @@ onMounted(() => {
     <!-- Delete Confirmation Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isDeleteModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
-          <UIcon name="i-lucide-trash-2" class="text-2xl text-red-600" />
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-trash-2" class="text-xl text-red-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Hapus Kategori</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Tindakan ini tidak dapat dibatalkan</p>
+          </div>
         </div>
-        <h3 class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Hapus Kategori?</h3>
-        <p class="text-slate-600 text-center mb-6">
-          Anda yakin ingin menghapus kategori <strong>{{ selectedCategory?.nama_kategori }}</strong>?
-          <br />
-          <span class="text-sm text-orange-600">
-            ⚠️ Kategori dengan {{ selectedCategory?._count?.alat || 0 }} alat
-          </span>
-          <br />
-          Data akan masuk ke Recycle Bin.
-        </p>
-        <div class="flex justify-center space-x-3">
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-sm text-slate-700">
+              Anda yakin ingin menghapus kategori <br />
+              <span class="font-semibold text-red-600">{{ selectedCategory?.nama_kategori }}</span>?
+              <br />
+              <span class="text-xs text-orange-600 mt-2 block">
+                ⚠️ Kategori dengan {{ selectedCategory?._count?.alat || 0 }} alat
+              </span>
+              <span class="text-xs text-slate-600 mt-1 block">Data akan masuk ke Recycle Bin.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3 bg-slate-50">
           <UButton variant="outline" @click="isDeleteModalOpen = false">Batal</UButton>
-          <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus</UButton>
+          <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus Kategori</UButton>
         </div>
       </div>
       </template>

@@ -587,10 +587,20 @@ onMounted(() => {
     <!-- Create Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isCreateModalOpen">
       <template #content>
-      <div class="p-6 max-h-[90vh] overflow-y-auto">
-        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Tambah Alat Baru</UDialogTitle>
-        <UDialogDescription class="text-slate-600 mb-6">Isi form di bawah untuk menambahkan alat baru ke sistem</UDialogDescription>
-        <form @submit.prevent="handleCreate" class="space-y-4">
+      <div class="w-full max-w-3xl mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-package-plus" class="text-xl text-teal-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Tambah Alat Baru</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Isi form di bawah untuk menambahkan alat baru ke sistem</p>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleCreate" class="p-6 space-y-5 max-h-[calc(90vh-140px)] overflow-y-auto">
           <!-- Image Upload -->
           <UFormField label="Gambar Alat (Base64)">
             <div class="space-y-3">
@@ -616,35 +626,36 @@ onMounted(() => {
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="Nama Alat" required>
-              <UInput v-model="createForm.nama_alat" placeholder="Contoh: Laptop Dell" size="lg" />
+              <UInput v-model="createForm.nama_alat" placeholder="Contoh: Laptop Dell" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kode Alat" required>
-              <UInput v-model="createForm.kode_alat" placeholder="Contoh: LPT-001" size="lg" />
+              <UInput v-model="createForm.kode_alat" placeholder="Contoh: LPT-001" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kategori" required>
-              <USelect v-model="createForm.id_kategori" :items="categories" placeholder="Pilih kategori" size="lg" />
+              <USelect v-model="createForm.id_kategori" :items="categories" placeholder="Pilih kategori" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Stok Awal" required>
-              <UInput v-model.number="createForm.stok" type="number" min="0" size="lg" />
+              <UInput v-model.number="createForm.stok" type="number" min="0" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kondisi" required>
-              <USelect v-model="createForm.kondisi" :items="kondisiOptions" size="lg" />
+              <USelect v-model="createForm.kondisi" :items="kondisiOptions" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Harga Penggantian" required>
-              <UInput v-model.number="createForm.harga" type="number" min="0" placeholder="Rp" size="lg" />
+              <UInput v-model.number="createForm.harga" type="number" min="0" placeholder="Rp" size="lg" class="w-full" />
             </UFormField>
           </div>
 
           <UFormField label="Spesifikasi">
-            <UTextarea v-model="createForm.spesifikasi" placeholder="Detail spesifikasi alat" :rows="3" size="lg" />
+            <UTextarea v-model="createForm.spesifikasi" placeholder="Detail spesifikasi alat" :rows="4" size="lg" class="w-full" />
           </UFormField>
 
-          <div class="flex justify-end space-x-3 pt-4">
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
             <UButton type="button" variant="outline" @click="isCreateModalOpen = false">Batal</UButton>
             <UButton type="submit" color="primary" :loading="isLoading" class="bg-teal-600 hover:bg-teal-700">
               Simpan Alat
@@ -658,10 +669,20 @@ onMounted(() => {
     <!-- Edit Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isEditModalOpen">
       <template #content>
-      <div class="p-6 max-h-[90vh] overflow-y-auto">
-        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Edit Alat</UDialogTitle>
-        <UDialogDescription class="text-slate-600 mb-6">Perbarui informasi alat {{ selectedEquipment?.nama_alat }}</UDialogDescription>
-        <form @submit.prevent="handleUpdate" class="space-y-4">
+      <div class="w-full max-w-3xl mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-edit-3" class="text-xl text-blue-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Edit Alat</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Perbarui informasi alat {{ selectedEquipment?.nama_alat }}</p>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleUpdate" class="p-6 space-y-5 max-h-[calc(90vh-140px)] overflow-y-auto">
           <!-- Image Upload -->
           <UFormField label="Gambar Alat (Base64)">
             <div class="space-y-3">
@@ -687,27 +708,28 @@ onMounted(() => {
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="Nama Alat" required>
-              <UInput v-model="editForm.nama_alat" size="lg" />
+              <UInput v-model="editForm.nama_alat" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kode Alat" required>
-              <UInput v-model="editForm.kode_alat" size="lg" />
+              <UInput v-model="editForm.kode_alat" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kategori" required>
-              <USelect v-model="editForm.id_kategori" :items="categories" size="lg" />
+              <USelect v-model="editForm.id_kategori" :items="categories" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Harga Penggantian" required>
-              <UInput v-model.number="editForm.harga" type="number" min="0" size="lg" />
+              <UInput v-model.number="editForm.harga" type="number" min="0" size="lg" class="w-full" />
             </UFormField>
           </div>
 
           <UFormField label="Spesifikasi">
-            <UTextarea v-model="editForm.spesifikasi" :rows="3" size="lg" />
+            <UTextarea v-model="editForm.spesifikasi" :rows="4" size="lg" class="w-full" />
           </UFormField>
 
-          <div class="flex justify-end space-x-3 pt-4">
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
             <UButton type="button" variant="outline" @click="isEditModalOpen = false">Batal</UButton>
             <UButton type="submit" color="primary" :loading="isLoading" class="bg-teal-600 hover:bg-teal-700">
               Update Alat
@@ -721,14 +743,26 @@ onMounted(() => {
     <!-- Stock Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isStockModalOpen">
       <template #content>
-      <div class="p-6">
-        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Update Stok</UDialogTitle>
-        <UDialogDescription class="text-slate-600 mb-4">Ubah jumlah stok untuk {{ selectedEquipment?.nama_alat }}</UDialogDescription>
-        <form @submit.prevent="handleUpdateStock" class="space-y-4">
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-package" class="text-xl text-orange-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Update Stok</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Ubah jumlah stok untuk {{ selectedEquipment?.nama_alat }}</p>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleUpdateStock" class="p-6 space-y-4">
           <UFormField label="Jumlah Stok" required>
-            <UInput v-model.number="stockForm.stok" type="number" min="0" size="lg" />
+            <UInput v-model.number="stockForm.stok" type="number" min="0" size="lg" class="w-full" />
           </UFormField>
-          <div class="flex justify-end space-x-3">
+
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
             <UButton type="button" variant="outline" @click="isStockModalOpen = false">Batal</UButton>
             <UButton type="submit" color="warning" :loading="isLoading">Update Stok</UButton>
           </div>
@@ -740,14 +774,26 @@ onMounted(() => {
     <!-- Condition Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isConditionModalOpen">
       <template #content>
-      <div class="p-6">
-        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 mb-2">Update Kondisi</UDialogTitle>
-        <UDialogDescription class="text-slate-600 mb-4">Ubah kondisi untuk {{ selectedEquipment?.nama_alat }}</UDialogDescription>
-        <form @submit.prevent="handleUpdateCondition" class="space-y-4">
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-wrench" class="text-xl text-purple-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Update Kondisi</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Ubah kondisi untuk {{ selectedEquipment?.nama_alat }}</p>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleUpdateCondition" class="p-6 space-y-4">
           <UFormField label="Kondisi" required>
-            <USelect v-model="conditionForm.kondisi" :items="kondisiOptions" size="lg" />
+            <USelect v-model="conditionForm.kondisi" :items="kondisiOptions" size="lg" class="w-full" />
           </UFormField>
-          <div class="flex justify-end space-x-3">
+
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
             <UButton type="button" variant="outline" @click="isConditionModalOpen = false">Batal</UButton>
             <UButton type="submit" color="primary" :loading="isLoading">Update Kondisi</UButton>
           </div>
@@ -759,18 +805,34 @@ onMounted(() => {
     <!-- Delete Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isDeleteModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
-          <UIcon name="i-lucide-trash-2" class="text-2xl text-red-600" />
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-trash-2" class="text-xl text-red-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Hapus Alat</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Tindakan ini tidak dapat dibatalkan</p>
+          </div>
         </div>
-        <UDialogTitle class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Hapus Alat?</UDialogTitle>
-        <UDialogDescription class="text-slate-600 text-center mb-6">
-          Anda yakin ingin menghapus <strong>{{ selectedEquipment?.nama_alat }}</strong>?
-          <br />Data akan masuk ke Recycle Bin.
-        </UDialogDescription>
-        <div class="flex justify-center space-x-3">
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-sm text-slate-700">
+              Anda yakin ingin menghapus <br />
+              <span class="font-semibold text-red-600">{{ selectedEquipment?.nama_alat }}</span>?
+              <br />
+              <span class="text-xs text-slate-600 mt-2 block">Data akan masuk ke Recycle Bin.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3 bg-slate-50">
           <UButton variant="outline" @click="isDeleteModalOpen = false">Batal</UButton>
-          <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus</UButton>
+          <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus Alat</UButton>
         </div>
       </div>
       </template>

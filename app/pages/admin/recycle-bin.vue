@@ -468,18 +468,34 @@ onMounted(() => {
     <!-- Restore Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isRestoreModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center justify-center w-12 h-12 bg-teal-100 rounded-full mx-auto mb-4">
-          <UIcon name="i-lucide-rotate-ccw" class="text-2xl text-teal-600" />
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-rotate-ccw" class="text-xl text-teal-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Pulihkan Data</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Data akan dikembalikan ke sistem</p>
+          </div>
         </div>
-        <h3 class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Pulihkan Data?</h3>
-        <p class="text-slate-600 text-center mb-6">
-          Data akan dikembalikan ke sistem dan bisa digunakan kembali.
-        </p>
-        <div class="flex justify-center space-x-3">
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+          <div class="bg-teal-50 border border-teal-200 rounded-lg p-4">
+            <p class="text-sm text-slate-700">
+              Data akan dikembalikan ke sistem dan bisa digunakan kembali.
+              <br />
+              <span class="text-xs text-slate-600 mt-2 block">Data akan muncul kembali di daftar utama.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3 bg-slate-50">
           <UButton variant="outline" @click="isRestoreModalOpen = false">Batal</UButton>
           <UButton color="primary" :loading="isLoading" @click="handleRestore" class="bg-teal-600 hover:bg-teal-700">
-            Pulihkan
+            Pulihkan Data
           </UButton>
         </div>
       </div>
@@ -489,15 +505,32 @@ onMounted(() => {
     <!-- Permanent Delete Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isPermanentDeleteModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
-          <UIcon name="i-lucide-alert-triangle" class="text-2xl text-red-600" />
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-alert-triangle" class="text-xl text-red-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Hapus Permanen</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Tindakan ini tidak dapat dibatalkan</p>
+          </div>
         </div>
-        <h3 class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Hapus Permanen?</h3>
-        <p class="text-slate-600 text-center mb-6">
-          <strong class="text-red-600">PERINGATAN:</strong> Data akan dihapus permanen dari database dan tidak bisa dipulihkan lagi!
-        </p>
-        <div class="flex justify-center space-x-3">
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-sm text-slate-700">
+              <strong class="text-red-600">⚠️ PERINGATAN:</strong><br />
+              Data akan dihapus permanen dari database dan tidak bisa dipulihkan lagi!
+              <br />
+              <span class="text-xs text-slate-600 mt-2 block">Pastikan Anda benar-benar yakin sebelum melanjutkan.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3 bg-slate-50">
           <UButton variant="outline" @click="isPermanentDeleteModalOpen = false">Batal</UButton>
           <UButton color="error" :loading="isLoading" @click="handlePermanentDelete">
             Hapus Permanen

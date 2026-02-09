@@ -491,39 +491,53 @@ onMounted(() => {
     <!-- Create Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isCreateModalOpen">
       <template #content>
-      <div class="p-6">
-        <h3 class="font-heading font-bold text-xl text-slate-900 mb-6">Tambah Pengguna Baru</h3>
-        <form @submit.prevent="handleCreate" class="space-y-4">
+      <div class="w-full max-w-2xl mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-user-plus" class="text-xl text-teal-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Tambah Pengguna Baru</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Buat akun pengguna baru di sistem</p>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleCreate" class="p-6 space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="Nama Lengkap" required>
-              <UInput v-model="createForm.nama_lengkap" placeholder="Masukkan nama lengkap" size="lg" />
+              <UInput v-model="createForm.nama_lengkap" placeholder="Masukkan nama lengkap" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Username" required>
-              <UInput v-model="createForm.username" placeholder="Masukkan username" size="lg" />
+              <UInput v-model="createForm.username" placeholder="Masukkan username" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Password" required>
-              <UInput v-model="createForm.password" type="password" placeholder="Min. 6 karakter" size="lg" />
+              <UInput v-model="createForm.password" type="password" placeholder="Min. 6 karakter" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kelas" required>
-              <USelect v-model="createForm.kelas" :items="kelasOptions" placeholder="Pilih kelas" size="lg" />
+              <USelect v-model="createForm.kelas" :items="kelasOptions" placeholder="Pilih kelas" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Jenis Kelamin" required>
-              <USelect v-model="createForm.jenis_kelamin" :items="genderOptions" placeholder="Pilih" size="lg" />
+              <USelect v-model="createForm.jenis_kelamin" :items="genderOptions" placeholder="Pilih" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Role" required>
-              <USelect v-model="createForm.role" :items="roleOptions" size="lg" />
+              <USelect v-model="createForm.role" :items="roleOptions" size="lg" class="w-full" />
             </UFormField>
           </div>
 
-          <div class="flex justify-end space-x-3 pt-4">
-            <UButton type="button" variant="outline" @click="isCreateModalOpen = false">Batal</UButton>
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
+            <UButton type="button" variant="outline" @click="isCreateModalOpen = false">
+              Batal
+            </UButton>
             <UButton type="submit" color="primary" :loading="isLoading" class="bg-teal-600 hover:bg-teal-700">
-              Simpan
+              Simpan Pengguna
             </UButton>
           </div>
         </form>
@@ -534,39 +548,53 @@ onMounted(() => {
     <!-- Edit Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isEditModalOpen">
       <template #content>
-      <div class="p-6">
-        <h3 class="font-heading font-bold text-xl text-slate-900 mb-6">Edit Pengguna</h3>
-        <form @submit.prevent="handleUpdate" class="space-y-4">
+      <div class="w-full max-w-2xl mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-edit-3" class="text-xl text-blue-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Edit Pengguna</h3>
+            <p class="text-sm text-slate-500 mt-0.5">{{ selectedUser?.nama_lengkap }}</p>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleUpdate" class="p-6 space-y-5">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <UFormField label="Nama Lengkap" required>
-              <UInput v-model="editForm.nama_lengkap" size="lg" />
+              <UInput v-model="editForm.nama_lengkap" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Username" required>
-              <UInput v-model="editForm.username" size="lg" />
+              <UInput v-model="editForm.username" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Kelas" required>
-              <USelect v-model="editForm.kelas" :items="kelasOptions" size="lg" />
+              <USelect v-model="editForm.kelas" :items="kelasOptions" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Jenis Kelamin" required>
-              <USelect v-model="editForm.jenis_kelamin" :items="genderOptions" size="lg" />
+              <USelect v-model="editForm.jenis_kelamin" :items="genderOptions" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Role" required>
-              <USelect v-model="editForm.role" :items="roleOptions" size="lg" />
+              <USelect v-model="editForm.role" :items="roleOptions" size="lg" class="w-full" />
             </UFormField>
 
             <UFormField label="Status Akun" required>
-              <USelect v-model="editForm.status_akun" :items="statusOptions" size="lg" />
+              <USelect v-model="editForm.status_akun" :items="statusOptions" size="lg" class="w-full" />
             </UFormField>
           </div>
 
-          <div class="flex justify-end space-x-3 pt-4">
-            <UButton type="button" variant="outline" @click="isEditModalOpen = false">Batal</UButton>
+          <!-- Modal Footer (inside form) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6">
+            <UButton type="button" variant="outline" @click="isEditModalOpen = false">
+              Batal
+            </UButton>
             <UButton type="submit" color="primary" :loading="isLoading" class="bg-teal-600 hover:bg-teal-700">
-              Update
+              Update Pengguna
             </UButton>
           </div>
         </form>
@@ -577,18 +605,38 @@ onMounted(() => {
     <!-- Delete Confirmation Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isDeleteModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
-          <UIcon name="i-lucide-trash-2" class="text-2xl text-red-600" />
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-trash-2" class="text-xl text-red-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Hapus Pengguna</h3>
+            <p class="text-sm text-slate-500 mt-0.5">Tindakan ini tidak dapat dibatalkan</p>
+          </div>
         </div>
-        <h3 class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Hapus Pengguna?</h3>
-        <p class="text-slate-600 text-center mb-6">
-          Anda yakin ingin menghapus <strong>{{ selectedUser?.nama_lengkap }}</strong>?
-          <br />Data akan masuk ke Recycle Bin.
-        </p>
-        <div class="flex justify-center space-x-3">
-          <UButton variant="outline" @click="isDeleteModalOpen = false">Batal</UButton>
-          <UButton color="error" :loading="isLoading" @click="handleDelete">Hapus</UButton>
+
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p class="text-sm text-slate-700">
+              Anda yakin ingin menghapus pengguna <br />
+              <span class="font-semibold text-red-600">{{ selectedUser?.nama_lengkap }}</span>?
+              <br />
+              <span class="text-xs text-slate-600 mt-2 block">Data akan masuk ke Recycle Bin.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-4 border-t border-slate-200 flex items-center justify-end gap-3 bg-slate-50">
+          <UButton variant="outline" @click="isDeleteModalOpen = false">
+            Batal
+          </UButton>
+          <UButton color="error" :loading="isLoading" @click="handleDelete">
+            Hapus Pengguna
+          </UButton>
         </div>
       </div>
       </template>
@@ -597,37 +645,66 @@ onMounted(() => {
     <!-- Reset Password Modal (LAZY LOADED) -->
     <LazyUModal v-model:open="isResetPasswordModalOpen">
       <template #content>
-      <div class="p-6">
-        <div class="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mx-auto mb-4">
-          <UIcon name="i-lucide-key" class="text-2xl text-purple-600" />
+      <div class="w-full max-w-md mx-auto">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+          <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+            <UIcon name="i-lucide-key" class="text-xl text-purple-600" />
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-slate-900">Reset Password</h3>
+            <p class="text-sm text-slate-500 mt-0.5">{{ selectedUser?.nama_lengkap }}</p>
+          </div>
         </div>
-        <h3 class="font-heading font-bold text-xl text-slate-900 text-center mb-2">Reset Password</h3>
-        <p class="text-slate-600 text-center mb-4">
-          Reset password untuk <strong>{{ selectedUser?.nama_lengkap }}</strong>
-        </p>
-        <form @submit.prevent="handleResetPassword" class="space-y-4">
+
+        <!-- Modal Body -->
+        <form @submit.prevent="handleResetPassword" class="p-6 space-y-4">
+          <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+            <p class="text-xs text-slate-600">
+              <UIcon name="i-lucide-info" class="inline mr-1" />
+              Password baru minimal 6 karakter
+            </p>
+          </div>
+
           <UFormField label="Password Baru" required>
             <UInput
               v-model="newPassword"
               type="password"
-              placeholder="Masukkan password baru (min. 6 karakter)"
+              placeholder="Masukkan password baru"
               size="lg"
+              class="w-full"
             />
           </UFormField>
+
           <UFormField label="Konfirmasi Password" required>
             <UInput
               v-model="confirmPassword"
               type="password"
               placeholder="Ulangi password baru"
               size="lg"
+              class="w-full"
             />
           </UFormField>
-          <p v-if="confirmPassword && newPassword !== confirmPassword" class="text-sm text-red-500">
-            Password tidak cocok
-          </p>
-          <div class="flex justify-center space-x-3 pt-2">
-            <UButton type="button" variant="outline" @click="isResetPasswordModalOpen = false">Batal</UButton>
-            <UButton type="submit" color="primary" :loading="isLoading" :disabled="newPassword.length < 6 || newPassword !== confirmPassword">
+
+          <div v-if="confirmPassword && newPassword !== confirmPassword" class="bg-red-50 border border-red-200 rounded-lg p-3">
+            <p class="text-sm text-red-600 flex items-center gap-2">
+              <UIcon name="i-lucide-alert-circle" />
+              Password tidak cocok
+            </p>
+          </div>
+
+          <!-- Modal Footer (inside form for submit to work) -->
+          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 -mx-6 px-6 py-4 bg-slate-50 -mb-6 rounded-b-lg">
+            <UButton type="button" variant="outline" @click="isResetPasswordModalOpen = false">
+              Batal
+            </UButton>
+            <UButton
+              type="submit"
+              color="primary"
+              :loading="isLoading"
+              :disabled="newPassword.length < 6 || newPassword !== confirmPassword"
+              class="bg-purple-600 hover:bg-purple-700"
+            >
               Reset Password
             </UButton>
           </div>
