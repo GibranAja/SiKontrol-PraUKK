@@ -1,0 +1,204 @@
+// Prisma Schema untuk Sistem Peminjaman Alat
+// Database: MySQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ========== ENUMS ==========
+
+enum RoleType {
+  ADMIN
+  PETUGAS
+  PEMINJAM
+}
+
+enum StatusAkun {
+  AKTIF
+  DIBLOKIR
+  NONAKTIF
+}
+
+enum StatusPeminjaman {
+  MENUNGGU_PERSETUJUAN
+  DISETUJUI
+  DITOLAK
+  DIPINJAM
+  DIKEMBALIKAN
+}
+
+enum StatusPerpanjangan {
+  MENUNGGU
+  DISETUJUI
+  DITOLAK
+}
+
+enum StatusDenda {
+  BELUM_BAYAR
+  LUNAS
+  DICICIL
+  WAIVED
+}
+
+enum KondisiType {
+  BAIK
+  RUSAK_RINGAN
+  RUSAK_BERAT
+  HILANG
+  PERBAIKAN
+}
+
+// ========== MODELS ==========
+
+model Users {
+  id_user       Int        @id @default(autoincrement())
+  username      String     @unique @db.VarChar(50)
+  password      String     @db.VarChar(255)
+  nama_lengkap  String     @db.VarChar(100)
+  role          RoleType   @default(PEMINJAM)
+  kelas         String     @db.VarChar(20)
+  jenis_kelamin String     @db.VarChar(10)
+  status_akun   StatusAkun @default(AKTIF)
+  created_at    DateTime   @default(now())
+  deleted_at    DateTime?  // Soft delete
+
+  // Relations
+  peminjaman                    Peminjaman[]
+  perpanjangan_diajukan         Perpanjangan[] @relation("PengajuPerpanjangan")
+  perpanjangan_diverifikasi     Perpanjangan[] @relation("VerifikatorPerpanjangan")
+  pengembalian_diverifikasi     Pengembalian[] @relation("VerifikatorPengembalian")
+  log_aktivitas                 LogAktivitas[]
+
+  @@index([role, status_akun])
+  @@index([username])
+  @@map("users")
+}
+
+model Kategori {
+  id_kategori   Int     @id @default(autoincrement())
+  nama_kategori String  @db.VarChar(50)
+  deskripsi     String? @db.Text
+  deleted_at    DateTime?
+
+  alat Alat[]
+
+  @@map("kategori")
+}
+
+model Alat {
+  id_alat     Int         @id @default(autoincrement())
+  id_kategori Int
+  nama_alat   String      @db.VarChar(100)
+  kode_alat   String      @unique @db.VarChar(50)
+  stok        Int         @default(0)
+  kondisi     KondisiType @default(BAIK)
+  gambar      String?     @db.VarChar(255)
+  spesifikasi String?     @db.Text
+  harga       Int         @default(0) // Harga untuk penggantian jika hilang
+  created_at  DateTime    @default(now())
+  deleted_at  DateTime?
+
+  kategori   Kategori     @relation(fields: [id_kategori], references: [id_kategori])
+  peminjaman Peminjaman[]
+
+  @@index([id_kategori])
+  @@index([kondisi])
+  @@index([kode_alat])
+  @@map("alat")
+}
+
+model Peminjaman {
+  id_peminjaman         Int              @id @default(autoincrement())
+  id_user               Int
+  id_alat               Int
+  kode_peminjaman       String           @unique @db.VarChar(50)
+  tanggal_pengajuan     DateTime         @default(now())
+  tanggal_pinjam        DateTime?
+  tanggal_harus_kembali DateTime?
+  alasan_peminjaman     String           @db.Text
+  keperluan_lainnya     String?          @db.Text
+  status_peminjaman     StatusPeminjaman @default(MENUNGGU_PERSETUJUAN)
+  alasan_ditolak        String?          @db.Text
+  catatan_petugas       String?          @db.Text
+
+  user         Users          @relation(fields: [id_user], references: [id_user])
+  alat         Alat           @relation(fields: [id_alat], references: [id_alat])
+  perpanjangan Perpanjangan[]
+  pengembalian Pengembalian?
+
+  @@index([id_user, status_peminjaman])
+  @@index([tanggal_harus_kembali])
+  @@index([status_peminjaman])
+  @@map("peminjaman")
+}
+
+model Perpanjangan {
+  id_perpanjangan        Int                @id @default(autoincrement())
+  id_peminjaman          Int
+  id_user_pengaju        Int
+  tanggal_pengajuan      DateTime           @default(now())
+  durasi_tambahan_hari   Int
+  alasan_permintaan      String             @db.Text
+  status_perpanjangan    StatusPerpanjangan @default(MENUNGGU)
+  alasan_ditolak_admin   String?            @db.Text
+  tgl_disetujui          DateTime?
+  id_petugas_verifikator Int?
+
+  peminjaman          Peminjaman @relation(fields: [id_peminjaman], references: [id_peminjaman])
+  pengaju             Users      @relation("PengajuPerpanjangan", fields: [id_user_pengaju], references: [id_user])
+  petugas_verifikator Users?     @relation("VerifikatorPerpanjangan", fields: [id_petugas_verifikator], references: [id_user])
+
+  @@index([status_perpanjangan])
+  @@index([id_peminjaman])
+  @@map("perpanjangan")
+}
+
+model Pengembalian {
+  id_pengembalian           Int         @id @default(autoincrement())
+  id_peminjaman             Int         @unique
+  tanggal_kembali_actual    DateTime    @default(now())
+  denda                     Int         @default(0)
+  status_denda              StatusDenda @default(BELUM_BAYAR)
+  kondisi_alat_saat_kembali KondisiType
+  catatan_pengembalian      String?     @db.Text
+  verifikator_id            Int
+
+  peminjaman  Peminjaman @relation(fields: [id_peminjaman], references: [id_peminjaman])
+  verifikator Users      @relation("VerifikatorPengembalian", fields: [verifikator_id], references: [id_user])
+
+  @@map("pengembalian")
+}
+
+model LogAktivitas {
+  id_log    Int      @id @default(autoincrement())
+  id_user   Int
+  aktivitas String   @db.VarChar(255)
+  detail    String?  @db.Text
+  ip_address String? @db.VarChar(45)
+  timestamp DateTime @default(now())
+
+  user Users @relation(fields: [id_user], references: [id_user])
+
+  @@index([id_user])
+  @@index([timestamp])
+  @@map("log_aktivitas")
+}
+
+// Untuk menyimpan refresh token (optional - bisa juga di Redis)
+model RefreshToken {
+  id         Int      @id @default(autoincrement())
+  token      String   @unique @db.VarChar(500)
+  user_id    Int
+  expires_at DateTime
+  created_at DateTime @default(now())
+  revoked    Boolean  @default(false)
+
+  @@index([user_id])
+  @@index([token])
+  @@map("refresh_tokens")
+}

@@ -1,0 +1,721 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Sistem Peminjaman Alat API",
+  "collectionId": "sistem-peminjaman-alat",
+  "dateExported": "2026-02-05",
+  "version": "1.0",
+  "folders": [
+    {
+      "name": "1. Authentication",
+      "requests": [
+        {
+          "name": "Register",
+          "method": "POST",
+          "url": "{{baseUrl}}/auth/register",
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"Test123\",\n  \"nama_lengkap\": \"Test User\",\n  \"role\": \"PEMINJAM\",\n  \"kelas\": \"XII RPL 1\",\n  \"jenis_kelamin\": \"Laki-laki\"\n}"
+          }
+        },
+        {
+          "name": "Login Admin",
+          "method": "POST",
+          "url": "{{baseUrl}}/auth/login",
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin123\"\n}"
+          },
+          "tests": [
+            {
+              "type": "set-env",
+              "value": "json.data.accessToken",
+              "envVar": "accessToken"
+            }
+          ]
+        },
+        {
+          "name": "Login Petugas",
+          "method": "POST",
+          "url": "{{baseUrl}}/auth/login",
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"username\": \"petugas1\",\n  \"password\": \"Petugas123\"\n}"
+          }
+        },
+        {
+          "name": "Login Peminjam",
+          "method": "POST",
+          "url": "{{baseUrl}}/auth/login",
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"username\": \"peminjam1\",\n  \"password\": \"Peminjam123\"\n}"
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "method": "POST",
+          "url": "{{baseUrl}}/auth/refresh",
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+          }
+        },
+        {
+          "name": "Logout",
+          "method": "POST",
+          "url": "{{baseUrl}}/auth/logout",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Users",
+      "requests": [
+        {
+          "name": "Get All Users",
+          "method": "GET",
+          "url": "{{baseUrl}}/users?page=1&limit=10",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get User Profile",
+          "method": "GET",
+          "url": "{{baseUrl}}/users/profile",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get User by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/users/1",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/users/3",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"nama_lengkap\": \"Updated Name\",\n  \"kelas\": \"XII RPL 2\"\n}"
+          }
+        },
+        {
+          "name": "Change User Status",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/users/3/status",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"status_akun\": \"AKTIF\"\n}"
+          }
+        },
+        {
+          "name": "Change Password",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/users/change-password",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"old_password\": \"Peminjam123\",\n  \"new_password\": \"NewPassword123\",\n  \"confirm_password\": \"NewPassword123\"\n}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Kategori",
+      "requests": [
+        {
+          "name": "Create Kategori",
+          "method": "POST",
+          "url": "{{baseUrl}}/kategori",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"nama_kategori\": \"Alat Musik\",\n  \"deskripsi\": \"Kategori untuk alat musik\"\n}"
+          }
+        },
+        {
+          "name": "Get All Kategori",
+          "method": "GET",
+          "url": "{{baseUrl}}/kategori"
+        },
+        {
+          "name": "Get Kategori by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/kategori/1"
+        },
+        {
+          "name": "Update Kategori",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/kategori/1",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"nama_kategori\": \"Elektronik & Teknologi\",\n  \"deskripsi\": \"Updated description\"\n}"
+          }
+        },
+        {
+          "name": "Delete Kategori",
+          "method": "DELETE",
+          "url": "{{baseUrl}}/kategori/4",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Alat",
+      "requests": [
+        {
+          "name": "Create Alat",
+          "method": "POST",
+          "url": "{{baseUrl}}/alat",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"id_kategori\": 1,\n  \"nama_alat\": \"Laptop Asus ROG\",\n  \"kode_alat\": \"LAPTOP-001\",\n  \"stok\": 5,\n  \"kondisi\": \"BAIK\",\n  \"spesifikasi\": \"Intel Core i7, 16GB RAM, RTX 3060\",\n  \"harga\": 15000000\n}"
+          }
+        },
+        {
+          "name": "Get All Alat",
+          "method": "GET",
+          "url": "{{baseUrl}}/alat?page=1&limit=10"
+        },
+        {
+          "name": "Get Alat with Filter",
+          "method": "GET",
+          "url": "{{baseUrl}}/alat?id_kategori=1&kondisi=BAIK&stok_min=1"
+        },
+        {
+          "name": "Search Alat",
+          "method": "GET",
+          "url": "{{baseUrl}}/alat?search=laptop"
+        },
+        {
+          "name": "Get Alat by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/alat/1"
+        },
+        {
+          "name": "Update Alat",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/alat/1",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"nama_alat\": \"Laptop Asus ROG Strix\",\n  \"stok\": 6,\n  \"harga\": 16000000\n}"
+          }
+        },
+        {
+          "name": "Update Kondisi Alat",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/alat/1/kondisi",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"kondisi\": \"BAIK\",\n  \"catatan\": \"Kondisi normal\"\n}"
+          }
+        },
+        {
+          "name": "Delete Alat",
+          "method": "DELETE",
+          "url": "{{baseUrl}}/alat/10",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Peminjaman",
+      "requests": [
+        {
+          "name": "Create Peminjaman",
+          "method": "POST",
+          "url": "{{baseUrl}}/peminjaman",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"id_alat\": 1,\n  \"alasan_peminjaman\": \"Untuk project akhir\",\n  \"keperluan_lainnya\": \"Development aplikasi web\"\n}"
+          }
+        },
+        {
+          "name": "Get All Peminjaman",
+          "method": "GET",
+          "url": "{{baseUrl}}/peminjaman?page=1&limit=10",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Pending Peminjaman",
+          "method": "GET",
+          "url": "{{baseUrl}}/peminjaman?status_peminjaman=MENUNGGU_PERSETUJUAN",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Active Peminjaman",
+          "method": "GET",
+          "url": "{{baseUrl}}/peminjaman?status_peminjaman=DIPINJAM",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Peminjaman by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/peminjaman/1",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Approve Peminjaman",
+          "method": "POST",
+          "url": "{{baseUrl}}/peminjaman/1/verify",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"action\": \"approve\",\n  \"catatan_petugas\": \"Disetujui, harap kembalikan tepat waktu\",\n  \"durasi_hari\": 7\n}"
+          }
+        },
+        {
+          "name": "Reject Peminjaman",
+          "method": "POST",
+          "url": "{{baseUrl}}/peminjaman/1/verify",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"action\": \"reject\",\n  \"alasan_ditolak\": \"Alat sedang dalam perbaikan\"\n}"
+          }
+        },
+        {
+          "name": "Cancel Peminjaman",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/peminjaman/1/cancel",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"alasan\": \"Tidak jadi meminjam\"\n}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Perpanjangan",
+      "requests": [
+        {
+          "name": "Create Perpanjangan",
+          "method": "POST",
+          "url": "{{baseUrl}}/perpanjangan",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"id_peminjaman\": 1,\n  \"durasi_tambahan_hari\": 5,\n  \"alasan_permintaan\": \"Project belum selesai\"\n}"
+          }
+        },
+        {
+          "name": "Get All Perpanjangan",
+          "method": "GET",
+          "url": "{{baseUrl}}/perpanjangan?page=1&limit=10",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Pending Perpanjangan",
+          "method": "GET",
+          "url": "{{baseUrl}}/perpanjangan?status_perpanjangan=MENUNGGU",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Perpanjangan by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/perpanjangan/1",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Approve Perpanjangan",
+          "method": "POST",
+          "url": "{{baseUrl}}/perpanjangan/1/verify",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"action\": \"approve\"\n}"
+          }
+        },
+        {
+          "name": "Reject Perpanjangan",
+          "method": "POST",
+          "url": "{{baseUrl}}/perpanjangan/1/verify",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"action\": \"reject\",\n  \"alasan_ditolak\": \"Melebihi batas maksimal\"\n}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Pengembalian",
+      "requests": [
+        {
+          "name": "Process Pengembalian - Baik",
+          "method": "POST",
+          "url": "{{baseUrl}}/pengembalian",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"id_peminjaman\": 1,\n  \"kondisi_alat_saat_kembali\": \"BAIK\",\n  \"catatan_pengembalian\": \"Dikembalikan dalam kondisi baik\"\n}"
+          }
+        },
+        {
+          "name": "Process Pengembalian - Rusak",
+          "method": "POST",
+          "url": "{{baseUrl}}/pengembalian",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"id_peminjaman\": 2,\n  \"kondisi_alat_saat_kembali\": \"RUSAK_RINGAN\",\n  \"catatan_pengembalian\": \"LCD sedikit retak\"\n}"
+          }
+        },
+        {
+          "name": "Get All Pengembalian",
+          "method": "GET",
+          "url": "{{baseUrl}}/pengembalian?page=1&limit=10",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Unpaid Denda",
+          "method": "GET",
+          "url": "{{baseUrl}}/pengembalian?status_denda=BELUM_BAYAR",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Pengembalian by ID",
+          "method": "GET",
+          "url": "{{baseUrl}}/pengembalian/1",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Bayar Denda - Lunas",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/pengembalian/1/bayar-denda",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"status_denda\": \"LUNAS\",\n  \"catatan\": \"Dibayar tunai\"\n}"
+          }
+        },
+        {
+          "name": "Bayar Denda - Waived",
+          "method": "PATCH",
+          "url": "{{baseUrl}}/pengembalian/1/bayar-denda",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ],
+          "body": {
+            "type": "json",
+            "raw": "{\n  \"status_denda\": \"WAIVED\",\n  \"catatan\": \"Dibebaskan\"\n}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Log Aktivitas",
+      "requests": [
+        {
+          "name": "Get All Logs",
+          "method": "GET",
+          "url": "{{baseUrl}}/log-aktivitas?page=1&limit=20",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Logs by User",
+          "method": "GET",
+          "url": "{{baseUrl}}/log-aktivitas?id_user=3",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Get Login Logs",
+          "method": "GET",
+          "url": "{{baseUrl}}/log-aktivitas?aktivitas=LOGIN",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "9. Laporan",
+      "requests": [
+        {
+          "name": "Dashboard Statistics",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/dashboard",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Laporan Peminjaman - All",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/peminjaman",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Laporan Peminjaman - By Date",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/peminjaman?tanggal_dari=2026-02-01&tanggal_sampai=2026-02-28",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Laporan Denda - All",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/denda",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Laporan Denda - Unpaid",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/denda?status_denda=BELUM_BAYAR",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Top 5 Alat - All Time",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/alat-terbanyak?periode=all&limit=5",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        },
+        {
+          "name": "Top 10 Alat - This Month",
+          "method": "GET",
+          "url": "{{baseUrl}}/laporan/alat-terbanyak?periode=month&limit=10",
+          "headers": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{accessToken}}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "environments": [
+    {
+      "name": "Local Development",
+      "variables": {
+        "baseUrl": "http://localhost:3000/api",
+        "accessToken": "",
+        "refreshToken": ""
+      }
+    }
+  ]
+}
