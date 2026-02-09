@@ -97,7 +97,7 @@ model Alat {
   kode_alat   String      @unique @db.VarChar(50)
   stok        Int         @default(0)
   kondisi     KondisiType @default(BAIK)
-  gambar      String?     @db.VarChar(255)
+  gambar      String?     @db.LongText
   spesifikasi String?     @db.Text
   harga       Int         @default(0) // Harga untuk penggantian jika hilang
   created_at  DateTime    @default(now())

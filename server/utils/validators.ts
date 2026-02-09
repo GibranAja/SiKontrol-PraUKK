@@ -155,6 +155,7 @@ export const createAlatSchema = z.object({
     .optional(),
   stok: z.number().int().min(0, 'Stok tidak boleh negatif').default(0),
   kondisi: z.enum(['BAIK', 'RUSAK_RINGAN', 'RUSAK_BERAT', 'HILANG', 'PERBAIKAN']).default('BAIK'),
+  gambar: z.string().optional(),
   spesifikasi: z.string().max(2000, 'Spesifikasi maksimal 2000 karakter').optional(),
   harga: z.number().int().min(0, 'Harga tidak boleh negatif').default(0),
 })
@@ -166,8 +167,14 @@ export const updateAlatSchema = z.object({
     .min(2, 'Nama alat minimal 2 karakter')
     .max(100, 'Nama alat maksimal 100 karakter')
     .optional(),
+  kode_alat: z
+    .string()
+    .min(3, 'Kode alat minimal 3 karakter')
+    .max(50, 'Kode alat maksimal 50 karakter')
+    .optional(),
   stok: z.number().int().min(0, 'Stok tidak boleh negatif').optional(),
   kondisi: z.enum(['BAIK', 'RUSAK_RINGAN', 'RUSAK_BERAT', 'HILANG', 'PERBAIKAN']).optional(),
+  gambar: z.string().optional(),
   spesifikasi: z.string().max(2000, 'Spesifikasi maksimal 2000 karakter').optional(),
   harga: z.number().int().min(0, 'Harga tidak boleh negatif').optional(),
 })

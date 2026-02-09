@@ -62,7 +62,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const { id_kategori, nama_alat, stok, kondisi, spesifikasi, harga } = validation.data
+    const { id_kategori, nama_alat, kode_alat, stok, kondisi, gambar, spesifikasi, harga } = validation.data
 
     // Check if new kategori exists
     if (id_kategori) {
@@ -84,8 +84,10 @@ export default defineEventHandler(async (event) => {
       data: {
         ...(id_kategori !== undefined && { id_kategori }),
         ...(nama_alat !== undefined && { nama_alat }),
+        ...(kode_alat !== undefined && { kode_alat }),
         ...(stok !== undefined && { stok }),
         ...(kondisi !== undefined && { kondisi }),
+        ...(gambar !== undefined && { gambar }),
         ...(spesifikasi !== undefined && { spesifikasi }),
         ...(harga !== undefined && { harga }),
       },

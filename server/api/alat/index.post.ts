@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const { id_kategori, nama_alat, kode_alat, stok, kondisi, spesifikasi, harga } = validation.data
+    const { id_kategori, nama_alat, kode_alat, stok, kondisi, gambar, spesifikasi, harga } = validation.data
 
     // Check if kategori exists
     const kategori = await prisma.kategori.findUnique({
@@ -74,6 +74,7 @@ export default defineEventHandler(async (event) => {
         kode_alat: finalKodeAlat,
         stok,
         kondisi,
+        gambar,
         spesifikasi,
         harga,
       },
