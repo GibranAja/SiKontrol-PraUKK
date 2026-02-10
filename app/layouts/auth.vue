@@ -25,7 +25,7 @@
             SiKontrol
           </h1>
           <p class="text-xl text-white/80 font-light leading-relaxed max-w-md">
-            Sistem Peminjaman Alat<br />yang Modern & Efisien
+            Sistem Peminjaman Alat<br />Sarana dan Prasarana
           </p>
         </div>
 

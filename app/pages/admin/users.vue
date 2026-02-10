@@ -69,9 +69,11 @@ const statusOptions = [
 ]
 
 const kelasOptions = [
-  'X RPL 1', 'X RPL 2', 'XI RPL 1', 'XI RPL 2', 'XII RPL 1', 'XII RPL 2',
-  'X TKJ 1', 'X TKJ 2', 'XI TKJ 1', 'XI TKJ 2', 'XII TKJ 1', 'XII TKJ 2',
-  'X MM 1', 'X MM 2', 'XI MM 1', 'XI MM 2', 'XII MM 1', 'XII MM 2',
+  'X PPLG 1', 'X PPLG 2', 'X PPLG 3', 'XI PPLG 1', 'XI PPLG 2', 'XI PPLG 3', 'XII PPLG 1', 'XII PPLG 2', 'XII PPLG 3',
+  'X BCF 1', 'X BCF 2', 'XI BCF 1', 'XI BCF 2', 'XII BCF 1', 'XII BCF 2',
+  'X ANM 1', 'X ANM 2', 'XI ANM 1', 'XI ANM 2', 'XII ANM 1', 'XII ANM 2',
+  'X TO 1', 'X TO 2', 'XI TO 1', 'XI TO 2', 'XII TO 1', 'XII TO 2',
+  'X TPFL 1', 'X TPFL 2', 'XI TPFL 1', 'XI TPFL 2', 'XII TPFL 1', 'XII TPFL 2',
 ]
 
 const genderOptions = [
