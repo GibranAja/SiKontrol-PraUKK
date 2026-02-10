@@ -5,33 +5,28 @@ const menuItems = [
   {
     label: 'Dashboard',
     icon: 'i-lucide-layout-dashboard',
-    to: '/admin',
+    to: '/peminjam',
     exact: true,
   },
   {
-    label: 'Kelola Pengguna',
-    icon: 'i-lucide-users',
-    to: '/admin/users',
+    label: 'Katalog Alat',
+    icon: 'i-lucide-search',
+    to: '/peminjam/katalog',
   },
   {
-    label: 'Kelola Kategori',
-    icon: 'i-lucide-folder',
-    to: '/admin/categories',
+    label: 'Peminjaman Saya',
+    icon: 'i-lucide-clipboard-list',
+    to: '/peminjam/peminjaman',
   },
   {
-    label: 'Kelola Alat',
-    icon: 'i-lucide-package',
-    to: '/admin/equipment',
+    label: 'Perpanjangan',
+    icon: 'i-lucide-calendar-plus',
+    to: '/peminjam/perpanjangan',
   },
   {
-    label: 'Log Aktivitas',
-    icon: 'i-lucide-file-text',
-    to: '/admin/logs',
-  },
-  {
-    label: 'Recycle Bin',
-    icon: 'i-lucide-trash-2',
-    to: '/admin/recycle-bin',
+    label: 'Denda & Riwayat',
+    icon: 'i-lucide-receipt',
+    to: '/peminjam/denda',
   },
 ]
 </script>
@@ -42,7 +37,7 @@ const menuItems = [
     <AppSidebar
       v-model:isOpen="isSidebarOpen"
       :menuItems="menuItems"
-      panelLabel="Admin Panel"
+      panelLabel="Peminjam"
     />
 
     <!-- Main Content -->
@@ -54,8 +49,8 @@ const menuItems = [
     >
       <!-- Top Bar (Reusable Component) -->
       <AppHeader
-        title="Dashboard Admin"
-        subtitle="Kelola sistem peminjaman alat"
+        title="Panel Peminjam"
+        subtitle="Pinjam & kelola alat dengan mudah"
       />
 
       <!-- Page Content -->

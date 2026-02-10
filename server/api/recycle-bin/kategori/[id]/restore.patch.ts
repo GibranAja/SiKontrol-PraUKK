@@ -12,10 +12,10 @@ export default defineEventHandler(async (event) => {
   try {
     const user = event.context.user
 
-    if (!user || user.role !== 'ADMIN') {
+    if (!user || !['ADMIN', 'PETUGAS'].includes(user.role)) {
       throw createError({
         statusCode: 403,
-        data: formatErrorResponse('FORBIDDEN', 'Hanya admin yang dapat memulihkan data'),
+        data: formatErrorResponse('FORBIDDEN', 'Hanya admin/petugas yang dapat memulihkan data'),
       })
     }
 

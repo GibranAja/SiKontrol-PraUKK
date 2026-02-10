@@ -5,33 +5,43 @@ const menuItems = [
   {
     label: 'Dashboard',
     icon: 'i-lucide-layout-dashboard',
-    to: '/admin',
+    to: '/petugas',
     exact: true,
   },
   {
-    label: 'Kelola Pengguna',
-    icon: 'i-lucide-users',
-    to: '/admin/users',
-  },
-  {
-    label: 'Kelola Kategori',
-    icon: 'i-lucide-folder',
-    to: '/admin/categories',
-  },
-  {
-    label: 'Kelola Alat',
+    label: 'Katalog Alat',
     icon: 'i-lucide-package',
-    to: '/admin/equipment',
+    to: '/petugas/equipment',
   },
   {
-    label: 'Log Aktivitas',
-    icon: 'i-lucide-file-text',
-    to: '/admin/logs',
+    label: 'Peminjaman',
+    icon: 'i-lucide-hand-helping',
+    to: '/petugas/borrowings',
+  },
+  {
+    label: 'Perpanjangan',
+    icon: 'i-lucide-calendar-plus',
+    to: '/petugas/extensions',
+  },
+  {
+    label: 'Pengembalian',
+    icon: 'i-lucide-undo-2',
+    to: '/petugas/returns',
+  },
+  {
+    label: 'Kontrol Disiplin',
+    icon: 'i-lucide-shield-alert',
+    to: '/petugas/blacklist',
+  },
+  {
+    label: 'Laporan',
+    icon: 'i-lucide-file-bar-chart',
+    to: '/petugas/reports',
   },
   {
     label: 'Recycle Bin',
     icon: 'i-lucide-trash-2',
-    to: '/admin/recycle-bin',
+    to: '/petugas/recycle-bin',
   },
 ]
 </script>
@@ -42,7 +52,7 @@ const menuItems = [
     <AppSidebar
       v-model:isOpen="isSidebarOpen"
       :menuItems="menuItems"
-      panelLabel="Admin Panel"
+      panelLabel="Petugas Panel"
     />
 
     <!-- Main Content -->
@@ -54,8 +64,8 @@ const menuItems = [
     >
       <!-- Top Bar (Reusable Component) -->
       <AppHeader
-        title="Dashboard Admin"
-        subtitle="Kelola sistem peminjaman alat"
+        title="Panel Petugas"
+        subtitle="Manajemen peminjaman & pengembalian alat"
       />
 
       <!-- Page Content -->

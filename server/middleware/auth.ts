@@ -55,7 +55,8 @@ const ROUTE_PERMISSIONS: RoutePermission[] = [
   { pattern: /^\/api\/perpanjangan$/, methods: ['POST'], roles: ['PEMINJAM'] },
   { pattern: /^\/api\/perpanjangan\/\d+\/verify$/, methods: ['POST'], roles: ['ADMIN', 'PETUGAS'] },
 
-  // Pengembalian - Petugas/Admin only
+  // Pengembalian
+  { pattern: /^\/api\/pengembalian$/, methods: ['GET'], roles: ['ADMIN', 'PETUGAS', 'PEMINJAM'] },
   { pattern: /^\/api\/pengembalian$/, methods: ['POST'], roles: ['ADMIN', 'PETUGAS'] },
   { pattern: /^\/api\/pengembalian\/\d+\/bayar-denda$/, methods: ['PATCH'], roles: ['ADMIN', 'PETUGAS'] },
 
