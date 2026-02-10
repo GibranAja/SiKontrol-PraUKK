@@ -18,9 +18,10 @@ const pagination = ref({ page: 1, limit: 20, total: 0, totalPages: 0 })
 
 // Filters
 const search = ref('')
-const statusFilter = ref<string | undefined>(undefined)
+const statusFilter = ref<string>('ALL')
 
 const statusOptions = [
+  { label: 'Semua Status', value: 'ALL' },
   { label: 'Aktif', value: 'AKTIF' },
   { label: 'Diblokir', value: 'DIBLOKIR' },
 ]
@@ -35,7 +36,7 @@ async function fetchUsers() {
   try {
     const params: any = { page: pagination.value.page, limit: pagination.value.limit, role: 'PEMINJAM' }
     if (search.value) params.search = search.value
-    if (statusFilter.value && statusFilter.value !== 'ALL') params.status = statusFilter.value
+    if (statusFilter.value && statusFilter.value !== 'ALL') params.status_akun = statusFilter.value
 
     const response = await $fetch('/api/users', {
       query: params,
@@ -178,7 +179,7 @@ onMounted(() => fetchUsers())
         <UInput v-model="search" placeholder="Cari nama, username, kelas..." icon="i-lucide-search" size="lg" />
         <USelect
           v-model="statusFilter"
-          :items="[{ label: 'Semua Status', value: 'ALL' }, ...statusOptions]"
+          :items="statusOptions"
           placeholder="Filter Status"
           size="lg"
         />

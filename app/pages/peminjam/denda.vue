@@ -359,7 +359,7 @@ onMounted(async () => {
             <div class="flex items-center gap-3 shrink-0">
               <span
                 :class="[
-                  'text-xs font-medium px-2 py-0.5 rounded-full',
+                  'inline-block text-xs font-medium px-2 py-0.5 rounded-md whitespace-normal break-words max-w-[65px]',
                   getKondisiColor(item.kondisi_alat_saat_kembali),
                 ]"
               >
@@ -370,7 +370,7 @@ onMounted(async () => {
                 <p class="text-sm font-bold text-red-600">{{ formatRupiah(item.denda) }}</p>
                 <span
                   :class="[
-                    'text-xs font-semibold px-2 py-0.5 rounded-full',
+                    'inline-block text-xs font-semibold px-2 py-0.5 rounded-md whitespace-normal break-words max-w-[65px]',
                     getDendaStatusColor(item.status_denda),
                   ]"
                 >
@@ -488,7 +488,7 @@ onMounted(async () => {
                 <p class="text-xs text-slate-500 mb-1">Kondisi Alat Saat Kembali</p>
                 <span
                   :class="[
-                    'text-sm font-semibold px-3 py-1 rounded-full',
+                    'inline-block text-sm font-semibold px-3 py-1 rounded-md whitespace-normal break-words max-w-[90px]',
                     getKondisiColor(selectedItem.kondisi_alat_saat_kembali),
                   ]"
                 >

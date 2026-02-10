@@ -20,7 +20,7 @@ const pagination = ref({ page: 1, limit: 10, total: 0, totalPages: 0 })
 const statusFilter = ref<string | undefined>(undefined)
 
 const statusOptions = [
-  { label: 'Menunggu Persetujuan', value: 'MENUNGGU_PERSETUJUAN' },
+  { label: 'Menunggu', value: 'MENUNGGU' },
   { label: 'Disetujui', value: 'DISETUJUI' },
   { label: 'Ditolak', value: 'DITOLAK' },
 ]
@@ -123,7 +123,7 @@ async function handleReject() {
 
 function getStatusColor(status: string) {
   switch (status) {
-    case 'MENUNGGU_PERSETUJUAN': return 'bg-orange-100 text-orange-700'
+    case 'MENUNGGU': return 'bg-orange-100 text-orange-700'
     case 'DISETUJUI': return 'bg-green-100 text-green-700'
     case 'DITOLAK': return 'bg-red-100 text-red-700'
     default: return 'bg-slate-100 text-slate-700'
@@ -132,7 +132,7 @@ function getStatusColor(status: string) {
 
 function formatStatus(status: string) {
   const map: Record<string, string> = {
-    MENUNGGU_PERSETUJUAN: 'Menunggu Persetujuan',
+    MENUNGGU: 'Menunggu',
     DISETUJUI: 'Disetujui',
     DITOLAK: 'Ditolak',
   }
@@ -208,21 +208,21 @@ onMounted(() => fetchPerpanjangan())
             <tr v-else v-for="item in perpanjangan" :key="item.id_perpanjangan" class="hover:bg-slate-50 transition-colors">
               <td class="px-6 py-4">
                 <div>
-                  <p class="text-sm font-semibold text-slate-900">{{ item.peminjaman?.user?.nama_lengkap || '-' }}</p>
-                  <p class="text-xs text-slate-500">{{ item.peminjaman?.user?.kelas || '-' }}</p>
+                  <p class="text-sm font-semibold text-slate-900">{{ item.pengaju?.nama_lengkap || '-' }}</p>
+                  <p class="text-xs text-slate-500">{{ item.pengaju?.kelas || '-' }}</p>
                 </div>
               </td>
               <td class="px-6 py-4">
                 <span class="text-sm font-mono font-semibold text-slate-700">{{ item.peminjaman?.kode_peminjaman || '-' }}</span>
               </td>
               <td class="px-6 py-4">
-                <p class="text-sm text-slate-700 max-w-xs truncate" :title="item.alasan_perpanjangan">{{ item.alasan_perpanjangan || '-' }}</p>
+                <p class="text-sm text-slate-700 max-w-xs truncate" :title="item.alasan_permintaan">{{ item.alasan_permintaan || '-' }}</p>
               </td>
               <td class="px-6 py-4">
-                <span class="text-sm text-slate-700">{{ item.durasi_perpanjangan_hari || '-' }} hari</span>
+                <span class="text-sm text-slate-700">{{ item.durasi_tambahan_hari || '-' }} hari</span>
               </td>
               <td class="px-6 py-4">
-                <span class="text-sm text-slate-700">{{ formatDate(item.created_at || item.tanggal_pengajuan) }}</span>
+                <span class="text-sm text-slate-700">{{ formatDate(item.tanggal_pengajuan) }}</span>
               </td>
               <td class="px-6 py-4">
                 <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getStatusColor(item.status_perpanjangan)]">
@@ -231,7 +231,7 @@ onMounted(() => fetchPerpanjangan())
               </td>
               <td class="px-6 py-4">
                 <div class="flex items-center justify-center space-x-2">
-                  <template v-if="item.status_perpanjangan === 'MENUNGGU_PERSETUJUAN'">
+                  <template v-if="item.status_perpanjangan === 'MENUNGGU'">
                     <UButton icon="i-lucide-check" size="sm" color="success" variant="soft" @click="openVerifyModal(item)" title="Setujui" />
                     <UButton icon="i-lucide-x" size="sm" color="error" variant="soft" @click="openRejectModal(item)" title="Tolak" />
                   </template>
@@ -268,10 +268,10 @@ onMounted(() => fetchPerpanjangan())
 
           <div class="p-6 space-y-4">
             <div class="bg-teal-50 border border-teal-200 rounded-lg p-4 space-y-2">
-              <p class="text-sm text-slate-700"><strong>Peminjam:</strong> {{ selectedItem?.peminjaman?.user?.nama_lengkap }}</p>
+              <p class="text-sm text-slate-700"><strong>Peminjam:</strong> {{ selectedItem?.pengaju?.nama_lengkap }}</p>
               <p class="text-sm text-slate-700"><strong>Kode Pinjam:</strong> {{ selectedItem?.peminjaman?.kode_peminjaman }}</p>
-              <p class="text-sm text-slate-700"><strong>Durasi:</strong> {{ selectedItem?.durasi_perpanjangan_hari }} hari</p>
-              <p class="text-sm text-slate-700"><strong>Alasan:</strong> {{ selectedItem?.alasan_perpanjangan }}</p>
+              <p class="text-sm text-slate-700"><strong>Durasi:</strong> {{ selectedItem?.durasi_tambahan_hari }} hari</p>
+              <p class="text-sm text-slate-700"><strong>Alasan:</strong> {{ selectedItem?.alasan_permintaan }}</p>
             </div>
 
             <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -307,8 +307,8 @@ onMounted(() => fetchPerpanjangan())
 
           <form @submit.prevent="handleReject" class="p-6 space-y-4">
             <div class="bg-red-50 border border-red-200 rounded-lg p-4 space-y-2">
-              <p class="text-sm text-slate-700"><strong>Peminjam:</strong> {{ selectedItem?.peminjaman?.user?.nama_lengkap }}</p>
-              <p class="text-sm text-slate-700"><strong>Alasan Pengajuan:</strong> {{ selectedItem?.alasan_perpanjangan }}</p>
+              <p class="text-sm text-slate-700"><strong>Peminjam:</strong> {{ selectedItem?.pengaju?.nama_lengkap }}</p>
+              <p class="text-sm text-slate-700"><strong>Alasan Pengajuan:</strong> {{ selectedItem?.alasan_permintaan }}</p>
             </div>
 
             <UFormField label="Alasan Penolakan" required>

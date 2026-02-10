@@ -40,6 +40,8 @@ const returnForm = reactive({
   id_peminjaman: null as number | null,
   kondisi_alat_saat_kembali: 'BAIK' as string,
   catatan_pengembalian: '',
+  denda_rusak_manual: null as number | null,
+  denda_rusak_display: '' as string,
 })
 
 const kondisiOptions = [
@@ -58,6 +60,43 @@ const statusDendaOptions = [
   { label: 'Lunas', value: 'LUNAS' },
   { label: 'Dicicil', value: 'DICICIL' },
 ]
+
+// Computed: check if need manual fine input
+const needManualFineInput = computed(() => {
+  return returnForm.kondisi_alat_saat_kembali === 'RUSAK_RINGAN' || returnForm.kondisi_alat_saat_kembali === 'RUSAK_BERAT'
+})
+
+// Format number with thousand separator
+function formatCurrencyInput(value: string): string {
+  // Remove all non-digits
+  const digits = value.replace(/\D/g, '')
+  if (!digits) return ''
+
+  // Format with thousand separator
+  return parseInt(digits).toLocaleString('id-ID')
+}
+
+// Parse formatted string to number
+function parseCurrencyInput(value: string): number {
+  const digits = value.replace(/\D/g, '')
+  return digits ? parseInt(digits) : 0
+}
+
+// Handle denda input change
+function handleDendaInput(event: Event) {
+  const target = event.target as HTMLInputElement
+  const formatted = formatCurrencyInput(target.value)
+  returnForm.denda_rusak_display = formatted
+  returnForm.denda_rusak_manual = parseCurrencyInput(formatted)
+}
+
+// Watch kondisi change to reset denda
+watch(() => returnForm.kondisi_alat_saat_kembali, (newVal) => {
+  if (newVal !== 'RUSAK_RINGAN' && newVal !== 'RUSAK_BERAT') {
+    returnForm.denda_rusak_manual = null
+    returnForm.denda_rusak_display = ''
+  }
+})
 
 // Fetch returns list
 async function fetchPengembalian() {
@@ -134,6 +173,8 @@ async function openProcessModal() {
   returnForm.id_peminjaman = null
   returnForm.kondisi_alat_saat_kembali = 'BAIK'
   returnForm.catatan_pengembalian = ''
+  returnForm.denda_rusak_manual = null
+  returnForm.denda_rusak_display = ''
   isProcessModalOpen.value = true
   await fetchActiveLoans()
 }
@@ -143,6 +184,8 @@ async function processReturnFromOverdue(item: any) {
   returnForm.id_peminjaman = item.id_peminjaman
   returnForm.kondisi_alat_saat_kembali = 'BAIK'
   returnForm.catatan_pengembalian = ''
+  returnForm.denda_rusak_manual = null
+  returnForm.denda_rusak_display = ''
   isProcessModalOpen.value = true
   await fetchActiveLoans()
 }
@@ -150,6 +193,13 @@ async function processReturnFromOverdue(item: any) {
 // Submit process return
 async function handleProcessReturn() {
   if (!returnForm.id_peminjaman) return
+
+  // Validate manual fine if needed
+  if (needManualFineInput.value && (!returnForm.denda_rusak_manual || returnForm.denda_rusak_manual <= 0)) {
+    toast.add({ title: 'Validasi', description: 'Masukkan nominal denda untuk kondisi rusak', color: 'warning' })
+    return
+  }
+
   isLoading.value = true
   try {
     const response: any = await $fetch('/api/pengembalian', {
@@ -158,6 +208,7 @@ async function handleProcessReturn() {
         id_peminjaman: returnForm.id_peminjaman,
         kondisi_alat_saat_kembali: returnForm.kondisi_alat_saat_kembali,
         catatan_pengembalian: returnForm.catatan_pengembalian || undefined,
+        denda_rusak_manual: returnForm.denda_rusak_manual || undefined,
       },
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
@@ -371,7 +422,7 @@ onMounted(() => {
                 <span class="text-sm text-slate-700">{{ formatDate(item.tanggal_kembali_actual) }}</span>
               </td>
               <td class="px-6 py-4">
-                <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getKondisiColor(item.kondisi_alat_saat_kembali)]">
+                <span :class="['inline-block px-3 py-1 rounded-md text-xs font-semibold whitespace-normal break-words max-w-[70px]', getKondisiColor(item.kondisi_alat_saat_kembali)]">
                   {{ formatKondisi(item.kondisi_alat_saat_kembali) }}
                 </span>
               </td>
@@ -381,7 +432,7 @@ onMounted(() => {
                 </span>
               </td>
               <td class="px-6 py-4">
-                <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getDendaStatusColor(item.status_denda)]">
+                <span :class="['inline-block px-3 py-1 rounded-md text-xs font-semibold whitespace-normal break-words max-w-[70px]', getDendaStatusColor(item.status_denda)]">
                   {{ formatDendaStatus(item.status_denda) }}
                 </span>
               </td>
@@ -526,7 +577,7 @@ onMounted(() => {
                   <span class="text-sm font-bold text-red-600">{{ formatCurrency(item.denda) }}</span>
                 </td>
                 <td class="px-6 py-4">
-                  <span :class="['px-3 py-1 rounded-full text-xs font-semibold', getDendaStatusColor(item.status_denda)]">
+                  <span :class="['inline-block px-3 py-1 rounded-md text-xs font-semibold whitespace-normal break-words max-w-[70px]', getDendaStatusColor(item.status_denda)]">
                     {{ formatDendaStatus(item.status_denda) }}
                   </span>
                 </td>
@@ -558,7 +609,7 @@ onMounted(() => {
             </div>
           </div>
 
-          <form @submit.prevent="handleProcessReturn" class="p-6 space-y-5">
+          <form @submit.prevent="handleProcessReturn" class="p-6 space-y-5 max-h-[calc(90vh-140px)] overflow-y-auto">
             <UFormField label="Pilih Peminjaman" required>
               <USelect
                 v-model="returnForm.id_peminjaman"
@@ -588,6 +639,29 @@ onMounted(() => {
                 size="lg"
                 class="w-full"
               />
+            </UFormField>
+
+            <!-- Manual fine input for damaged items -->
+            <UFormField
+              v-if="needManualFineInput"
+              label="Nominal Denda Kerusakan"
+              required
+              description="Masukkan nominal denda sesuai tingkat kerusakan"
+            >
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">Rp</span>
+                <input
+                  type="text"
+                  v-model="returnForm.denda_rusak_display"
+                  @input="handleDendaInput"
+                  placeholder="0"
+                  class="w-full pl-12 pr-4 py-2.5 text-base border border-slate-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"
+                />
+              </div>
+              <p v-if="returnForm.denda_rusak_manual" class="text-sm text-teal-600 mt-1.5">
+                <UIcon name="i-lucide-info" class="mr-1 inline" />
+                Denda yang akan dikenakan: <strong>Rp {{ returnForm.denda_rusak_manual.toLocaleString('id-ID') }}</strong>
+              </p>
             </UFormField>
 
             <div v-if="returnForm.kondisi_alat_saat_kembali === 'HILANG'" class="bg-red-50 border border-red-200 rounded-lg p-3">

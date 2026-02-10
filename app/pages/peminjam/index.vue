@@ -194,7 +194,7 @@ const hasUnpaidFines = computed(() => {
           <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-clipboard-list" class="text-2xl text-teal-600" />
           </div>
-          <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-md">
             Total
           </span>
         </div>
@@ -210,7 +210,7 @@ const hasUnpaidFines = computed(() => {
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-clock" class="text-2xl text-blue-600" />
           </div>
-          <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-md">
             Aktif
           </span>
         </div>
@@ -226,7 +226,7 @@ const hasUnpaidFines = computed(() => {
           <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-alert-circle" class="text-2xl text-red-600" />
           </div>
-          <span class="text-xs font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-md">
             Perhatian
           </span>
         </div>
@@ -242,7 +242,7 @@ const hasUnpaidFines = computed(() => {
           <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-banknote" class="text-2xl text-amber-600" />
           </div>
-          <span class="text-xs font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-amber-600 bg-amber-50 px-3 py-1 rounded-md">
             Denda
           </span>
         </div>
@@ -336,7 +336,7 @@ const hasUnpaidFines = computed(() => {
             </div>
             <span
               :class="[
-                'text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap',
+                'inline-block text-xs font-semibold px-2.5 py-1 rounded-md whitespace-nowrap',
                 getStatusColor(item.status_peminjaman),
               ]"
             >

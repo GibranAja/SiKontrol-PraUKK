@@ -272,7 +272,7 @@ onMounted(() => {
             <div class="shrink-0">
               <span
                 :class="[
-                  'text-xs font-semibold px-3 py-1.5 rounded-full',
+                  'inline-block text-xs font-semibold px-3 py-1.5 rounded-md',
                   getStatusColor(item.status_perpanjangan),
                 ]"
               >

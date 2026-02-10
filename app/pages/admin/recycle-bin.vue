@@ -272,7 +272,7 @@ onMounted(() => {
             <UIcon name="i-lucide-users" class="text-lg" />
             <span>Pengguna</span>
             <span v-if="deletedUsers.length > 0" :class="[
-              'px-2 py-0.5 rounded-full text-xs font-bold',
+              'inline-block px-2 py-0.5 rounded-md text-xs font-bold',
               activeTab === 'users' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
             ]">
               {{ deletedUsers.length }}
@@ -291,7 +291,7 @@ onMounted(() => {
             <UIcon name="i-lucide-folder" class="text-lg" />
             <span>Kategori</span>
             <span v-if="deletedCategories.length > 0" :class="[
-              'px-2 py-0.5 rounded-full text-xs font-bold',
+              'inline-block px-2 py-0.5 rounded-md text-xs font-bold',
               activeTab === 'categories' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
             ]">
               {{ deletedCategories.length }}
@@ -310,7 +310,7 @@ onMounted(() => {
             <UIcon name="i-lucide-package" class="text-lg" />
             <span>Alat</span>
             <span v-if="deletedEquipment.length > 0" :class="[
-              'px-2 py-0.5 rounded-full text-xs font-bold',
+              'inline-block px-2 py-0.5 rounded-md text-xs font-bold',
               activeTab === 'equipment' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
             ]">
               {{ deletedEquipment.length }}

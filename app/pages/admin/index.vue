@@ -76,7 +76,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-users" class="text-2xl text-blue-600" />
           </div>
-          <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-md">
             Total
           </span>
         </div>
@@ -92,7 +92,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-folder" class="text-2xl text-purple-600" />
           </div>
-          <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-md">
             Kategori
           </span>
         </div>
@@ -108,7 +108,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-package" class="text-2xl text-teal-600" />
           </div>
-          <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-md">
             Alat
           </span>
         </div>
@@ -124,7 +124,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-clock" class="text-2xl text-orange-600" />
           </div>
-          <span class="text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-md">
             Aktif
           </span>
         </div>

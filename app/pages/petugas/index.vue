@@ -75,7 +75,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-clock" class="text-2xl text-orange-600" />
           </div>
-          <span class="text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-orange-600 bg-orange-50 px-3 py-1 rounded-md">
             Menunggu
           </span>
         </div>
@@ -91,7 +91,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-hand-helping" class="text-2xl text-blue-600" />
           </div>
-          <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-md">
             Aktif
           </span>
         </div>
@@ -107,7 +107,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-alert-triangle" class="text-2xl text-red-600" />
           </div>
-          <span class="text-xs font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-red-600 bg-red-50 px-3 py-1 rounded-md">
             Terlambat
           </span>
         </div>
@@ -123,7 +123,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-calendar-plus" class="text-2xl text-purple-600" />
           </div>
-          <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-md">
             Perpanjangan
           </span>
         </div>
@@ -142,7 +142,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-package" class="text-2xl text-teal-600" />
           </div>
-          <span class="text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-teal-600 bg-teal-50 px-3 py-1 rounded-md">
             Inventaris
           </span>
         </div>
@@ -159,7 +159,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-banknote" class="text-2xl text-yellow-600" />
           </div>
-          <span class="text-xs font-semibold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-yellow-600 bg-yellow-50 px-3 py-1 rounded-md">
             Denda
           </span>
         </div>
@@ -175,7 +175,7 @@ onMounted(() => {
           <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
             <UIcon name="i-lucide-trending-up" class="text-2xl text-green-600" />
           </div>
-          <span class="text-xs font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-full">
+          <span class="inline-block text-xs font-semibold text-green-600 bg-green-50 px-3 py-1 rounded-md">
             Bulan Ini
           </span>
         </div>
@@ -274,7 +274,7 @@ onMounted(() => {
               <p class="text-sm text-slate-500">{{ item.kategori?.nama_kategori || item.kode_alat }}</p>
             </div>
           </div>
-          <span class="px-4 py-2 rounded-full bg-teal-100 text-teal-700 text-sm font-bold">
+          <span class="inline-block px-4 py-2 rounded-md bg-teal-100 text-teal-700 text-sm font-bold">
             {{ item.peminjaman_count }}x dipinjam
           </span>
         </div>

@@ -476,7 +476,7 @@ Authorization: Bearer {accessToken}
 
 ### 2.6. Change User Status
 **Endpoint:** `PATCH /users/:id/status`
-**Access:** ADMIN
+**Access:** ADMIN / PETUGAS
 
 **Headers:**
 ```

@@ -31,9 +31,9 @@ interface RoutePermission {
 }
 
 const ROUTE_PERMISSIONS: RoutePermission[] = [
-  // Users management - Admin only
+  // Users management - Admin only (except status which allows PETUGAS for blacklist/whitelist)
   { pattern: /^\/api\/users$/, methods: ['POST'], roles: ['ADMIN'] },
-  { pattern: /^\/api\/users\/\d+\/status$/, methods: ['PATCH'], roles: ['ADMIN'] },
+  { pattern: /^\/api\/users\/\d+\/status$/, methods: ['PATCH'], roles: ['ADMIN', 'PETUGAS'] },
   { pattern: /^\/api\/users\/\d+$/, methods: ['DELETE'], roles: ['ADMIN'] },
 
   // Kategori - Admin only for mutations

@@ -1,6 +1,6 @@
 /**
  * PATCH /api/users/:id/status
- * Update user account status (Admin only)
+ * Update user account status (Admin/Petugas)
  */
 
 import { createError } from 'h3'

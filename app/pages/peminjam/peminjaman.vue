@@ -374,7 +374,7 @@ onMounted(async () => {
             <!-- Overdue Badge -->
             <span
               v-if="item.is_overdue"
-              class="text-xs font-semibold bg-red-500 text-white px-2 py-1 rounded-full animate-pulse"
+              class="inline-block text-xs font-semibold bg-red-500 text-white px-2 py-1 rounded-md animate-pulse"
             >
               Terlambat!
             </span>
@@ -382,7 +382,7 @@ onMounted(async () => {
             <!-- Has Pending Extension -->
             <span
               v-if="item.has_pending_perpanjangan"
-              class="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-1 rounded-full"
+              class="inline-block text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-1 rounded-md"
             >
               Perpanjangan Pending
             </span>
@@ -391,7 +391,7 @@ onMounted(async () => {
             <span
               v-if="item.pengembalian?.denda > 0"
               :class="[
-                'text-xs font-semibold px-2 py-1 rounded-full',
+                'inline-block text-xs font-semibold px-2 py-1 rounded-md',
                 getDendaStatusColor(item.pengembalian.status_denda),
               ]"
             >
@@ -401,7 +401,7 @@ onMounted(async () => {
             <!-- Status -->
             <span
               :class="[
-                'text-xs font-semibold px-3 py-1.5 rounded-full whitespace-nowrap',
+                'inline-block text-xs font-semibold px-3 py-1.5 rounded-md whitespace-nowrap',
                 getStatusColor(item.status_peminjaman),
               ]"
             >
@@ -601,7 +601,7 @@ onMounted(async () => {
                   <p class="text-xs text-slate-500">Status Denda</p>
                   <span
                     :class="[
-                      'text-xs font-semibold px-2 py-0.5 rounded-full',
+                      'inline-block text-xs font-semibold px-2 py-0.5 rounded-md',
                       getDendaStatusColor(selectedPeminjaman.pengembalian.status_denda),
                     ]"
                   >
@@ -631,7 +631,7 @@ onMounted(async () => {
                   <span class="text-xs text-slate-500">{{ formatDate(ext.tanggal_pengajuan) }}</span>
                   <span
                     :class="[
-                      'text-xs font-semibold px-2 py-0.5 rounded-full',
+                      'inline-block text-xs font-semibold px-2 py-0.5 rounded-md',
                       getPerpanjanganStatusColor(ext.status_perpanjangan),
                     ]"
                   >

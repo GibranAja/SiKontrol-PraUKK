@@ -228,7 +228,7 @@ onMounted(() => {
             <span class="px-2 py-1 rounded-md text-xs font-semibold bg-purple-100 text-purple-700">
               {{ item.kategori?.nama_kategori }}
             </span>
-            <span :class="['px-2 py-1 rounded-md text-xs font-semibold', getConditionColor(item.kondisi)]">
+            <span :class="['inline-block px-2 py-1 rounded-md text-xs font-semibold whitespace-normal break-words max-w-[65px]', getConditionColor(item.kondisi)]">
               {{ formatKondisi(item.kondisi) }}
             </span>
           </div>
@@ -292,7 +292,7 @@ onMounted(() => {
               </div>
               <div class="bg-slate-50 rounded-lg p-4">
                 <p class="text-xs text-slate-500 mb-1">Kondisi</p>
-                <span :class="['px-2 py-1 rounded-md text-xs font-semibold', getConditionColor(detailData.kondisi)]">
+                <span :class="['inline-block px-2 py-1 rounded-md text-xs font-semibold whitespace-normal break-words max-w-[65px]', getConditionColor(detailData.kondisi)]">
                   {{ formatKondisi(detailData.kondisi) }}
                 </span>
               </div>

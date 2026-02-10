@@ -56,7 +56,7 @@
 
 ### PATCH /api/users/:id/status
 - [ ] Change user status (AKTIF/DIBLOKIR/NONAKTIF)
-- [ ] Admin only
+- [ ] Admin/Petugas
 
 ### PATCH /api/users/change-password
 - [ ] Change own password

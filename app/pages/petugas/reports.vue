@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
+import { CalendarDate, DateFormatter, getLocalTimeZone, today, type DateValue } from '@internationalized/date'
 
 definePageMeta({
   layout: 'petugas',
@@ -11,6 +12,7 @@ useHead({
 
 const authStore = useAuthStore()
 const toast = useToast()
+const { exportToExcel } = useExcelExport()
 
 // Active report tab
 const activeReport = ref<'peminjaman' | 'denda' | 'alat-terbanyak'>('peminjaman')
@@ -20,11 +22,35 @@ const isLoading = ref(false)
 const isExporting = ref(false)
 
 // Date filters
-const dateFrom = ref('')
-const dateTo = ref('')
-const statusFilter = ref<string | undefined>(undefined)
-const dendaStatusFilter = ref<string | undefined>(undefined)
+const selectedDates = ref<DateValue[]>([])
+const isCalendarOpen = ref(false)
+const statusFilter = ref<string>('ALL')
+const dendaStatusFilter = ref<string>('ALL')
 const periodeFilter = ref('all')
+
+// Date formatter
+const df = new DateFormatter('id-ID', {
+  dateStyle: 'medium'
+})
+
+// Disable future dates
+function isDateDisabled(date: DateValue) {
+  const todayDate = today(getLocalTimeZone())
+  return date.compare(todayDate) > 0
+}
+
+// Format selected dates for display
+const selectedDatesText = computed(() => {
+  if (!selectedDates.value || selectedDates.value.length === 0) {
+    return 'Pilih tanggal...'
+  }
+
+  if (selectedDates.value.length === 1) {
+    return df.format(selectedDates.value[0].toDate(getLocalTimeZone()))
+  }
+
+  return `${selectedDates.value.length} tanggal dipilih`
+})
 
 const statusOptions = [
   { label: 'Menunggu', value: 'MENUNGGU_PERSETUJUAN' },
@@ -56,16 +82,34 @@ async function fetchPeminjamanReport() {
   isLoading.value = true
   try {
     const params: any = {}
-    if (dateFrom.value) params.tanggal_dari = dateFrom.value
-    if (dateTo.value) params.tanggal_sampai = dateTo.value
+
+    // Convert selected dates to ISO format for API
+    if (selectedDates.value && selectedDates.value.length > 0) {
+      const sortedDates = [...selectedDates.value].sort((a, b) => a.compare(b))
+      const firstDate = sortedDates[0]
+      const lastDate = sortedDates[sortedDates.length - 1]
+
+      // Format: YYYY-MM-DD using the date components directly
+      const formatDateString = (date: DateValue) => {
+        const year = date.year
+        const month = String(date.month).padStart(2, '0')
+        const day = String(date.day).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+
+      params.tanggal_dari = formatDateString(firstDate) + 'T00:00:00'
+      params.tanggal_sampai = formatDateString(lastDate) + 'T23:59:59'
+    }
+
     if (statusFilter.value && statusFilter.value !== 'ALL') params.status = statusFilter.value
 
-    const response = await $fetch('/api/laporan/peminjaman', {
+    const response: any = await $fetch('/api/laporan/peminjaman', {
       query: params,
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
-    if (response.data) {
-      peminjamanData.value = response.data
+    if (response?.data?.data) {
+      // API already filters by date range, no need for client-side filtering
+      peminjamanData.value = response.data.data
     }
   } catch (error) {
     console.error('Fetch peminjaman report error:', error)
@@ -79,16 +123,53 @@ async function fetchDendaReport() {
   isLoading.value = true
   try {
     const params: any = {}
-    if (dateFrom.value) params.tanggal_dari = dateFrom.value
-    if (dateTo.value) params.tanggal_sampai = dateTo.value
+
+    // Convert selected dates to ISO format for API
+    if (selectedDates.value && selectedDates.value.length > 0) {
+      const sortedDates = [...selectedDates.value].sort((a, b) => a.compare(b))
+      const firstDate = sortedDates[0]
+      const lastDate = sortedDates[sortedDates.length - 1]
+
+      // Format: YYYY-MM-DD using the date components directly
+      const formatDateString = (date: DateValue) => {
+        const year = date.year
+        const month = String(date.month).padStart(2, '0')
+        const day = String(date.day).padStart(2, '0')
+        return `${year}-${month}-${day}`
+      }
+
+      params.tanggal_dari = formatDateString(firstDate) + 'T00:00:00'
+      params.tanggal_sampai = formatDateString(lastDate) + 'T23:59:59'
+    }
+
     if (dendaStatusFilter.value && dendaStatusFilter.value !== 'ALL') params.status_denda = dendaStatusFilter.value
 
-    const response = await $fetch('/api/laporan/denda', {
+    const response: any = await $fetch('/api/laporan/denda', {
       query: params,
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
-    if (response.data) {
-      dendaData.value = response.data
+    if (response?.data) {
+      // Transform by_status array to object for easier template access
+      const byStatusObj: Record<string, any> = {}
+      if (response.data.summary?.by_status) {
+        for (const item of response.data.summary.by_status) {
+          byStatusObj[item.status] = {
+            jumlah: item.jumlah,
+            total: item.total
+          }
+        }
+      }
+
+      // API already filters by date range, no need for client-side filtering
+      // Map API response to template expected structure
+      dendaData.value = {
+        filter: response.data.filter,
+        summary: {
+          ...response.data.summary,
+          by_status: byStatusObj
+        },
+        detail: response.data.data
+      }
     }
   } catch (error) {
     console.error('Fetch denda report error:', error)
@@ -104,12 +185,26 @@ async function fetchAlatTerbanyakReport() {
     const params: any = { limit: 20 }
     if (periodeFilter.value !== 'all') params.periode = periodeFilter.value
 
-    const response = await $fetch('/api/laporan/alat-terbanyak', {
+    const response: any = await $fetch('/api/laporan/alat-terbanyak', {
       query: params,
       headers: { Authorization: `Bearer ${authStore.accessToken}` },
     })
-    if (response.data) {
-      alatTerbanyakData.value = response.data
+    if (response?.data) {
+      // Map API response to template expected structure
+      alatTerbanyakData.value = {
+        periode: response.data.periode,
+        summary: {
+          total_peminjaman: response.data.total_peminjaman,
+          total_alat_dipinjam: response.data.top_alat?.length || 0,
+          total_kategori: response.data.by_kategori?.length || 0
+        },
+        ranking: response.data.top_alat,
+        category_breakdown: response.data.by_kategori?.map((cat: any) => ({
+          kategori: cat.nama_kategori,
+          total_peminjaman: cat.total_peminjaman,
+          persentase: cat.persentase
+        })) || []
+      }
     }
   } catch (error) {
     console.error('Fetch alat terbanyak report error:', error)
@@ -124,81 +219,100 @@ function fetchCurrentReport() {
   else fetchAlatTerbanyakReport()
 }
 
-// ========== EXCEL EXPORT (pure client-side) ==========
-function exportToExcel(sheetName: string, headers: string[], rows: (string | number)[][]) {
+// ========== EXCEL EXPORT dengan ExcelJS ==========
+async function exportPeminjaman() {
+  if (isExporting.value) return
   isExporting.value = true
+
   try {
-    // Build CSV with BOM for Excel compat
-    const BOM = '\ufeff'
-    const csvContent = BOM + [headers.join(';'), ...rows.map(r => r.join(';'))].join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    const dateStr = new Date().toISOString().split('T')[0]
-    link.download = `${sheetName}_${dateStr}.csv`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-    toast.add({ title: 'Berhasil', description: 'Laporan berhasil diekspor', color: 'success' })
-  } catch (error) {
-    toast.add({ title: 'Gagal', description: 'Gagal mengekspor laporan', color: 'error' })
+    const headers = ['No', 'Kode Peminjaman', 'Nama Peminjam', 'Kelas', 'Nama Alat', 'Kode Alat', 'Kategori', 'Tgl Pengajuan', 'Tgl Pinjam', 'Tgl Harus Kembali', 'Tgl Dikembalikan', 'Status', 'Denda', 'Status Denda']
+    const rows = peminjamanData.value.map((p: any, i: number) => [
+      i + 1,
+      p.kode_peminjaman || '',
+      p.user?.nama_lengkap || '',
+      p.user?.kelas || '',
+      p.alat?.nama_alat || '',
+      p.alat?.kode_alat || '',
+      p.alat?.kategori?.nama_kategori || '',
+      formatDate(p.tanggal_pengajuan),
+      formatDate(p.tanggal_pinjam),
+      formatDate(p.tanggal_harus_kembali),
+      p.pengembalian ? formatDate(p.pengembalian.tanggal_kembali_actual) : '-',
+      formatStatus(p.status_peminjaman),
+      p.pengembalian?.denda || 0,
+      p.pengembalian?.status_denda ? formatDendaStatus(p.pengembalian.status_denda) : '-',
+    ])
+
+    await exportToExcel({
+      fileName: 'Laporan_Peminjaman',
+      sheetName: 'Data Peminjaman',
+      headers,
+      data: rows,
+      title: 'LAPORAN DATA PEMINJAMAN ALAT',
+      columnWidths: [6, 18, 20, 12, 25, 15, 18, 18, 18, 20, 20, 18, 12, 15]
+    })
   } finally {
     isExporting.value = false
   }
 }
 
-function exportPeminjaman() {
-  const headers = ['No', 'Kode Peminjaman', 'Nama Peminjam', 'Kelas', 'Nama Alat', 'Kode Alat', 'Kategori', 'Tgl Pengajuan', 'Tgl Pinjam', 'Tgl Harus Kembali', 'Tgl Dikembalikan', 'Status', 'Denda', 'Status Denda']
-  const rows = peminjamanData.value.map((p: any, i: number) => [
-    i + 1,
-    p.kode_peminjaman || '',
-    p.user?.nama_lengkap || '',
-    p.user?.kelas || '',
-    p.alat?.nama_alat || '',
-    p.alat?.kode_alat || '',
-    p.alat?.kategori?.nama_kategori || '',
-    formatDate(p.tanggal_pengajuan),
-    formatDate(p.tanggal_pinjam),
-    formatDate(p.tanggal_harus_kembali),
-    p.pengembalian ? formatDate(p.pengembalian.tanggal_kembali_actual) : '',
-    formatStatus(p.status_peminjaman),
-    p.pengembalian?.denda || 0,
-    p.pengembalian?.status_denda ? formatDendaStatus(p.pengembalian.status_denda) : '',
-  ])
-  exportToExcel('Laporan_Peminjaman', headers, rows)
+async function exportDenda() {
+  if (!dendaData.value?.detail || isExporting.value) return
+  isExporting.value = true
+
+  try {
+    const headers = ['No', 'Kode Peminjaman', 'Nama Peminjam', 'Kelas', 'Nama Alat', 'Hari Terlambat', 'Jumlah Denda', 'Status Denda', 'Tgl Kembali']
+    const rows = dendaData.value.detail.map((d: any, i: number) => [
+      i + 1,
+      d.kode_peminjaman || '',
+      d.nama_peminjam || '',
+      d.kelas || '',
+      d.nama_alat || '',
+      d.hari_terlambat || 0,
+      `Rp ${(d.denda || 0).toLocaleString('id-ID')}`,
+      d.status_denda_display || formatDendaStatus(d.status_denda),
+      formatDate(d.tanggal_kembali),
+    ])
+
+    await exportToExcel({
+      fileName: 'Laporan_Denda',
+      sheetName: 'Data Denda',
+      headers,
+      data: rows,
+      title: 'LAPORAN DENDA KETERLAMBATAN',
+      columnWidths: [6, 18, 20, 12, 25, 15, 18, 15, 18]
+    })
+  } finally {
+    isExporting.value = false
+  }
 }
 
-function exportDenda() {
-  if (!dendaData.value?.detail) return
-  const headers = ['No', 'Kode Peminjaman', 'Nama Peminjam', 'Kelas', 'Nama Alat', 'Hari Terlambat', 'Jumlah Denda', 'Status Denda', 'Tgl Kembali']
-  const rows = dendaData.value.detail.map((d: any, i: number) => [
-    i + 1,
-    d.kode_peminjaman || '',
-    d.nama_peminjam || '',
-    d.kelas || '',
-    d.nama_alat || '',
-    d.hari_terlambat || 0,
-    d.denda || 0,
-    d.status_denda_display || formatDendaStatus(d.status_denda),
-    formatDate(d.tanggal_kembali),
-  ])
-  exportToExcel('Laporan_Denda', headers, rows)
-}
+async function exportAlatTerbanyak() {
+  if (!alatTerbanyakData.value?.ranking || isExporting.value) return
+  isExporting.value = true
 
-function exportAlatTerbanyak() {
-  if (!alatTerbanyakData.value?.ranking) return
-  const headers = ['Rank', 'Kode Alat', 'Nama Alat', 'Kategori', 'Total Peminjaman', 'Persentase (%)']
-  const rows = alatTerbanyakData.value.ranking.map((a: any) => [
-    a.rank,
-    a.kode_alat || '',
-    a.nama_alat || '',
-    a.kategori || '',
-    a.total_peminjaman || 0,
-    a.persentase || 0,
-  ])
-  exportToExcel('Laporan_Alat_Terbanyak', headers, rows)
+  try {
+    const headers = ['Rank', 'Kode Alat', 'Nama Alat', 'Kategori', 'Total Peminjaman', 'Persentase (%)']
+    const rows = alatTerbanyakData.value.ranking.map((a: any) => [
+      a.rank,
+      a.kode_alat || '',
+      a.nama_alat || '',
+      a.kategori || '',
+      a.total_peminjaman || 0,
+      `${(a.persentase || 0).toFixed(2)}%`,
+    ])
+
+    await exportToExcel({
+      fileName: 'Laporan_Alat_Terbanyak',
+      sheetName: 'Ranking Alat',
+      headers,
+      data: rows,
+      title: 'LAPORAN ALAT PALING BANYAK DIPINJAM',
+      columnWidths: [8, 15, 30, 18, 18, 15]
+    })
+  } finally {
+    isExporting.value = false
+  }
 }
 
 // Helper functions
@@ -296,12 +410,30 @@ onMounted(() => {
       <!-- ========== Peminjaman Report ========== -->
       <div v-if="activeReport === 'peminjaman'" class="p-6 space-y-6">
         <!-- Filters -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <UFormField label="Dari Tanggal">
-            <UInput v-model="dateFrom" type="date" size="lg" class="w-full" />
-          </UFormField>
-          <UFormField label="Sampai Tanggal">
-            <UInput v-model="dateTo" type="date" size="lg" class="w-full" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <UFormField label="Pilih Tanggal">
+            <UPopover v-model:open="isCalendarOpen">
+              <UButton
+                color="neutral"
+                variant="outline"
+                icon="i-lucide-calendar"
+                size="lg"
+                block
+                class="justify-start font-normal"
+              >
+                {{ selectedDatesText }}
+              </UButton>
+
+              <template #content>
+                <UCalendar
+                  v-model="selectedDates"
+                  multiple
+                  :is-date-disabled="isDateDisabled"
+                  :number-of-months="2"
+                  class="p-2"
+                />
+              </template>
+            </UPopover>
           </UFormField>
           <UFormField label="Status">
             <USelect v-model="statusFilter" :items="[{ label: 'Semua', value: 'ALL' }, ...statusOptions]" size="lg" class="w-full" />
@@ -401,12 +533,30 @@ onMounted(() => {
       <!-- ========== Denda Report ========== -->
       <div v-if="activeReport === 'denda'" class="p-6 space-y-6">
         <!-- Filters -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <UFormField label="Dari Tanggal">
-            <UInput v-model="dateFrom" type="date" size="lg" class="w-full" />
-          </UFormField>
-          <UFormField label="Sampai Tanggal">
-            <UInput v-model="dateTo" type="date" size="lg" class="w-full" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <UFormField label="Pilih Tanggal">
+            <UPopover v-model:open="isCalendarOpen">
+              <UButton
+                color="neutral"
+                variant="outline"
+                icon="i-lucide-calendar"
+                size="lg"
+                block
+                class="justify-start font-normal"
+              >
+                {{ selectedDatesText }}
+              </UButton>
+
+              <template #content>
+                <UCalendar
+                  v-model="selectedDates"
+                  multiple
+                  :is-date-disabled="isDateDisabled"
+                  :number-of-months="2"
+                  class="p-2"
+                />
+              </template>
+            </UPopover>
           </UFormField>
           <UFormField label="Status Denda">
             <USelect v-model="dendaStatusFilter" :items="[{ label: 'Semua', value: 'ALL' }, ...dendaStatusOptions]" size="lg" class="w-full" />
@@ -488,7 +638,7 @@ onMounted(() => {
                 </td>
                 <td class="px-4 py-3 text-right font-semibold text-red-600">{{ item.denda_formatted || formatCurrency(item.denda) }}</td>
                 <td class="px-4 py-3">
-                  <span :class="['px-2 py-0.5 rounded-full text-xs font-semibold', getDendaStatusColor(item.status_denda)]">
+                  <span :class="['inline-block px-2 py-0.5 rounded-md text-xs font-semibold whitespace-normal break-words max-w-[70px]', getDendaStatusColor(item.status_denda)]">
                     {{ item.status_denda_display || formatDendaStatus(item.status_denda) }}
                   </span>
                 </td>

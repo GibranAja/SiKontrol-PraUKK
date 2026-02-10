@@ -268,6 +268,7 @@ export const createPengembalianSchema = z.object({
     errorMap: () => ({ message: 'Kondisi alat tidak valid' }),
   }),
   catatan_pengembalian: z.string().max(1000, 'Catatan maksimal 1000 karakter').optional(),
+  denda_rusak_manual: z.number().int().min(0, 'Denda tidak boleh negatif').optional(),
 })
 
 export const updateDendaSchema = z.object({

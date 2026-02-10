@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const { id_peminjaman, kondisi_alat_saat_kembali, catatan_pengembalian } = validation.data
+    const { id_peminjaman, kondisi_alat_saat_kembali, catatan_pengembalian, denda_rusak_manual } = validation.data
 
     // Get peminjaman with alat
     const peminjaman = await prisma.peminjaman.findUnique({
@@ -85,7 +85,8 @@ export default defineEventHandler(async (event) => {
       peminjaman.tanggal_harus_kembali!,
       now,
       kondisi_alat_saat_kembali,
-      peminjaman.alat.harga
+      peminjaman.alat.harga,
+      denda_rusak_manual
     )
 
     // Determine if stock should be restored (not if lost)

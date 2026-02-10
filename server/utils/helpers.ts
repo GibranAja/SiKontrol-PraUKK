@@ -33,7 +33,8 @@ export function calculateDenda(
   tanggalHarusKembali: Date,
   tanggalActual: Date,
   kondisi: string,
-  hargaAlat: number = 0
+  hargaAlat: number = 0,
+  dendaRusakManual?: number
 ): { total: number; breakdown: { keterlambatan: number; kondisi: number } } {
   const config = getDendaConfig()
 
@@ -49,10 +50,13 @@ export function calculateDenda(
   let dendaKondisi = 0
   switch (kondisi) {
     case 'RUSAK_RINGAN':
-      dendaKondisi = config.dendaRusakRingan
-      break
     case 'RUSAK_BERAT':
-      dendaKondisi = config.dendaRusakBerat
+      // Use manual input if provided, otherwise use default from config
+      if (dendaRusakManual !== undefined && dendaRusakManual !== null) {
+        dendaKondisi = dendaRusakManual
+      } else {
+        dendaKondisi = kondisi === 'RUSAK_RINGAN' ? config.dendaRusakRingan : config.dendaRusakBerat
+      }
       break
     case 'HILANG':
       dendaKondisi = hargaAlat

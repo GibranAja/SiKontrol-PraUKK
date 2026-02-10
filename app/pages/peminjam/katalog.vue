@@ -379,7 +379,7 @@ onMounted(async () => {
             </span>
             <span
               :class="[
-                'text-xs font-medium px-2 py-0.5 rounded-full',
+                'inline-block text-xs font-medium px-2 py-0.5 rounded-md whitespace-normal break-words max-w-[65px]',
                 getKondisiColor(alat.kondisi),
               ]"
             >
@@ -476,7 +476,7 @@ onMounted(async () => {
                   <p class="text-xs text-slate-500 mb-1">Kondisi</p>
                   <span
                     :class="[
-                      'text-xs font-semibold px-2 py-0.5 rounded-full',
+                      'inline-block text-xs font-semibold px-2 py-0.5 rounded-md whitespace-normal break-words max-w-[65px]',
                       getKondisiColor(selectedAlat.kondisi),
                     ]"
                   >
