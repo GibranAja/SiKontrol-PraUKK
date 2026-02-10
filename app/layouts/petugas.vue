@@ -29,7 +29,7 @@ const menuItems = [
     to: '/petugas/returns',
   },
   {
-    label: 'Kontrol Disiplin',
+    label: 'Kontrol Akun',
     icon: 'i-lucide-shield-alert',
     to: '/petugas/blacklist',
   },

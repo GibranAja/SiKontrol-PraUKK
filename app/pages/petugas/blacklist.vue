@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 useHead({
-  title: 'Kontrol Disiplin - SiKontrol',
+  title: 'Kontrol Akun - SiKontrol',
 })
 
 const authStore = useAuthStore()
@@ -132,7 +132,7 @@ onMounted(() => fetchUsers())
   <div class="space-y-6">
     <!-- Header -->
     <div>
-      <h1 class="font-heading font-bold text-2xl text-slate-900">Kontrol Disiplin</h1>
+      <h1 class="font-heading font-bold text-2xl text-slate-900">Kontrol Akun</h1>
       <p class="text-slate-600 mt-1">Kelola blacklist / whitelist peminjam</p>
     </div>
 
