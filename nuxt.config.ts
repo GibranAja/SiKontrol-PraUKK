@@ -69,6 +69,14 @@ export default defineNuxtConfig({
     },
   },
 
+  // Disable SSR for protected routes (auth uses localStorage, not cookies)
+  // This prevents flash of protected content before client-side auth check
+  routeRules: {
+    '/admin/**': { ssr: false },
+    '/petugas/**': { ssr: false },
+    '/peminjam/**': { ssr: false },
+  },
+
   // Nitro Configuration
   nitro: {
     experimental: {

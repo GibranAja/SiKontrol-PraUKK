@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/stores/auth'
+
 definePageMeta({
   layout: false,
 })
 
-const authStore = useAuthStore()
-
-// Redirect based on auth state
-onMounted(() => {
+// Redirect based on auth state immediately (no onMounted delay)
+if (import.meta.client) {
+  const authStore = useAuthStore()
   authStore.loadFromStorage()
 
   if (authStore.isAuthenticated && authStore.userRole) {
@@ -15,11 +16,11 @@ onMounted(() => {
       PETUGAS: '/petugas',
       PEMINJAM: '/peminjam',
     }
-    navigateTo(roleRoutes[authStore.userRole] || '/auth/login')
+    await navigateTo(roleRoutes[authStore.userRole] || '/auth/login', { replace: true })
   } else {
-    navigateTo('/auth/login')
+    await navigateTo('/auth/login', { replace: true })
   }
-})
+}
 </script>
 
 <template>
